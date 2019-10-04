@@ -155,6 +155,8 @@ nnoremap <leader>Y "*Y
 nnoremap <leader>p "*p
 nnoremap <leader>P "*P
 
+
+" ------------------ Line numbers
 "set relative numbers
 nnoremap <Leader>nr :set number relativenumber<CR>
 "set absolute numbers
