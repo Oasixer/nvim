@@ -1,0 +1,10 @@
+{
+    // supported css file types
+    "css.filetypes": [
+        "css",
+        "svelte",
+        "scss",
+        "less",
+        "wxss"
+    ]
+}
