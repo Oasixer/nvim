@@ -30,7 +30,6 @@ call plug#end()
 "To map <Esc> to exit terminal-mode: >
 "tnoremap <Esc> <C-\><C-n>
 "tnoremap <Leader>c <Esc><C-o>
-"tnoremap <Leader>b <Esc><C-o>
 
 "bind redo to U
 nnoremap U <C-r>
@@ -63,9 +62,11 @@ nnoremap <Leader>tt :term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash
 nnoremap <A-t> :vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
 inoremap <A-t> <Esc>:vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
 
-"Use <Leader>rl to reload init.vim & echo reloaded
+nnoremap <A-f> :vs .<Home>
+
+"Use <Leader>rl to reload init.vim & echom reloaded
 nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
-echo "reloaded"
+echom "reloaded"
 
 "Use <Leader>init to edit init.vim
 nnoremap <Leader>init :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
@@ -92,8 +93,8 @@ let g:lightline = {
 \ 'colorscheme': 'onedark',
 \ }
 
-let g:airline_theme='onedark'
 colorscheme onedark
+"let g:airline_theme='onedark'
 set noshowmode
 "colorscheme NeoSolarized
 
@@ -165,3 +166,27 @@ nnoremap <Leader>na :set nonumber norelativenumber<CR>:set number<CR>
 nnoremap <Leader>nn :set nonumber<CR>
 
 
+"cabbrev docs ~\Documents
+"echom "test"
+"----------------- pc specific
+if expand("$USERNAME") == "MoffettS"
+    "@work
+    echom "loading work stuff"
+    cabbrev kyb ~\Documents\KYB_Form\KYB_FORM
+    cabbrev init ~\.config\nvim\init.vim
+    nnoremap <Leader>kb i<C-c>kb<CR>
+    tnoremap <Leader>kb <C-c>kb<CR>
+    " doesnt work
+    "nnoremap <Leader>cdk :e kyb<CR>
+    nnoremap <Leader>ff vf{%zf
+else
+    "not @work
+    echom "not loading work stuff"
+endif
+
+
+"----------------------------
+
+"binding Leader d to discard & delete (aka save it to reg 9)
+nnoremap <Leader>d "9d
+nnoremap bh "9dd
