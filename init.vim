@@ -13,6 +13,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'evanleck/vim-svelte'
 
 Plug 'itchyny/lightline.vim'
+Plug 'itchyny/vim-gitbranch'
 
 Plug 'tpope/vim-surround'
 Plug 'https://tpope.io/vim/repeat.git'
@@ -51,10 +52,15 @@ syntax enable "ryan
 let g:netrw_keepdir=0
 
 let g:lightline = {
-\ 'colorscheme': 'onedark',
-\ }
-
-
+    \ 'colorscheme': 'one',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'component_function': {
+    \   'gitbranch': 'gitbranch#name'
+    \ },
+    \ }
 "suggested by coc documentation --------------------------------------
 " Some servers have issues with backup files, see #649
 set nobackup
@@ -73,7 +79,9 @@ set shortmess+=c
 set signcolumn=yes
 "----------------------------------------------------------------------
 colorscheme onedark
-set background=dark
+
+"necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
+GuiPopupmenu 0
 
 set hidden
 
@@ -157,11 +165,13 @@ nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 nnoremap <A-c> :close<CR>
 cnoremap <A-c> <C-u>close<CR>
+tnoremap <A-c> :close<CR>
 
 
 "Use Alt+t to open terminal
 "C:\Program Files\Git\bin\bash.exe"
 
+"todo: put this in the 
 nnoremap <Leader>tt :term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
 nnoremap <A-t> :vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
 inoremap <A-t> <Esc>:vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
