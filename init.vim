@@ -15,6 +15,9 @@ Plug 'evanleck/vim-svelte'
 Plug 'itchyny/lightline.vim'
 Plug 'itchyny/vim-gitbranch'
 
+"camelCase and snake_case motion for words
+Plug 'chaoren/vim-wordmotion'
+
 Plug 'tpope/vim-surround'
 Plug 'https://tpope.io/vim/repeat.git'
 
@@ -150,6 +153,7 @@ nnoremap U <C-r>
 "To simulate |i_CTRL-R| in terminal-mode: >
 tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 
+" WINDOW / WINDOWS MANAGEMENT/MOVEMENT STUFF -----------------------
 "To use `ALT+{h,j,k,l}` to navigate windows from any mode: >
 tnoremap <A-h> <C-\><C-N><C-w>h
 tnoremap <A-j> <C-\><C-N><C-w>j
@@ -163,10 +167,49 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
+
+tnoremap <A-H> <C-\><C-N><C-w>H
+tnoremap <A-J> <C-\><C-N><C-w>J
+tnoremap <A-K> <C-\><C-N><C-w>K
+tnoremap <A-L> <C-\><C-N><C-w>L
+inoremap <A-H> <C-\><C-N><C-w>H
+inoremap <A-J> <C-\><C-N><C-w>J
+inoremap <A-K> <C-\><C-N><C-w>K
+inoremap <A-L> <C-\><C-N><C-w>L
+
+nnoremap <A-H> <C-w>H
+nnoremap <A-J> <C-w>J
+nnoremap <A-K> <C-w>K
+
+nnoremap <A--> :res -1<CR>
+nnoremap <A-=> :res +1<CR>
+nnoremap <A-_> :res -5<CR>
+nnoremap <A-+> :res +5<CR>
+
+nnoremap <A-m> <C-w><lt>
+nnoremap <A-n> <C-w>>
+
+" cant map A-< so just use m since its left of less than
+nnoremap <A-M> 8<C-w><lt>
+nnoremap <A-N> 8<C-w>>
+
+nnoremap <A--> :res -1<CR>
+nnoremap <A-=> :res +1<CR>
+nnoremap <A-_> :res -5<CR>
+nnoremap <A-+> :res +5<CR>
+
+nnoremap <A-m> <C-w><lt>
+nnoremap <A-n> <C-w>>
+
+" cant map A-< so just use m since its left of less than
+nnoremap <A-M> 8<C-w><lt>
+nnoremap <A-N> 8<C-w>>
+
 nnoremap <A-c> :close<CR>
 cnoremap <A-c> <C-u>close<CR>
 tnoremap <A-c> :close<CR>
 
+"--------------------------------------------
 
 "Use Alt+t to open terminal
 "C:\Program Files\Git\bin\bash.exe"
@@ -176,18 +219,17 @@ nnoremap <Leader>tt :term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash
 nnoremap <A-t> :vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
 inoremap <A-t> <Esc>:vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
 
-nnoremap <A-f> :vs .<Home>
+"nnoremap <A-f> :vs .<Home>
 
 "Use <Leader>rl to reload init.vim & echom reloaded
 nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
 
-"Use <Leader>init to edit init.vim
-nnoremap <Leader>init :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
-
-" 3 diff acronyms for opening init in new tab
-nnoremap <Leader>tabinit :tabe ~\.config\nvim\init.vim<CR>
+"Use <Leader>init to edit init.vim in vsplit
+nnoremap <Leader>vinit :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
 nnoremap <Leader>tinit :tabe ~\.config\nvim\init.vim<CR>
-nnoremap <Leader>initt :tabe ~\.config\nvim\init.vim<CR>
+nnoremap <Leader>init :spl ~\.config\nvim\init.vim<CR>
+nnoremap <Leader>hinit :spl ~\.config\nvim\init.vim<CR>
+nnoremap <Leader>b :ls<CR>:b<space>
 
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
@@ -215,10 +257,6 @@ map Y y$
 nnoremap <C-L> :nohl<CR><C-L>
  
 "------------------------------------------------------------
-nnoremap <leader>y "*y
-nnoremap <leader>Y "*Y
-nnoremap <leader>p "*p
-nnoremap <leader>P "*P
 
 
 " ------------------ Line numbers
@@ -237,6 +275,7 @@ if expand("$USERNAME") == "MoffettS"
     echom "loading work stuff"
     cabbrev kyb ~\Documents\KYB_Form\KYB_FORM
     cabbrev init ~\.config\nvim\init.vim
+    cd ~/Documents
     nnoremap <Leader>kb i<C-c>kb<CR>
     tnoremap <Leader>kb <C-c>kb<CR>
     " doesnt work
@@ -250,15 +289,22 @@ endif
 
 
 " PASTING SHIT---------------------------------------------------------
-" Ctrl-j/k deletes blank line below/above, and C-J/K inserts.
+" Ctrl-J/K deletes blank line below/above, and C-j/k inserts.
 " from https://vim.fandom.com/wiki/Quickly_adding_and_deleting_empty_lines
-nnoremap <silent><C-j> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
-nnoremap <silent><C-k> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
-nnoremap <silent><C-J> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nnoremap <silent><C-K> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nnoremap <silent><C-J> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
+nnoremap <silent><C-K> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
+nnoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nnoremap <silent><C-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " Bind r to show reg
 nnoremap <Leader>r :reg<CR>
+
+
+nnoremap <leader>y "*y
+nnoremap <leader>Y "*Y
+nnoremap <leader>p "*p
+inoremap <leader>p "*p
+nnoremap <leader>P "*P
 
 " Bind <Leader><Leader>p to put on new line below
 nnoremap <Leader><Leader>p o<Esc>p
@@ -291,6 +337,9 @@ nnoremap <a-enter> O<Esc>2g;i<Esc>
 
 "nerd tree toggle
 noremap <C-n> :NERDTreeToggle<CR>
+
+" open Nerd Tree in folder of file in active buffer
+map <Leader>nt :NERDTree %:p:h<CR>
 
 "live preview toggle
 nnoremap <Leader>l :LLPStartPreview
@@ -418,3 +467,26 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 "nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 "" Resume latest coc list
 "nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+
+
+
+" LONG ASS SCRIPTS AND SHIT
+
+" Super useful function that swaps the position of the last two windows
+" well technically it swaps the buffers contained in the last two windows
+" see below for mapping to active this - i use <Leader>bs
+function! WinBufSwap()
+  let thiswin = winnr()
+  let thisbuf = bufnr("%")
+  let lastwin = winnr("#")
+  let lastbuf = winbufnr(lastwin)
+
+  exec  lastwin . " wincmd w" ."|".
+      \ "buffer ". thisbuf ."|".
+      \ thiswin ." wincmd w" ."|".
+      \ "buffer ". lastbuf
+endfunction
+
+command! Wswap :call WinBufSwap()
+map <Leader>bs <C-c>:call WinBufSwap()<CR>
