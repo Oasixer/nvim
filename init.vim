@@ -255,6 +255,7 @@ map Y y$
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
 nnoremap <C-L> :nohl<CR><C-L>
+nnoremap <Esc> :noh<CR>
  
 "------------------------------------------------------------
 
@@ -267,9 +268,18 @@ nnoremap <Leader>na :set nonumber norelativenumber<CR>:set number<CR>
 "set no numbers
 nnoremap <Leader>nn :set nonumber<CR>
 
+"line numbering
+set number relativenumber
+augroup numbertoggle
+	autocmd!
+	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
+augroup END
+
 
 "cabbrev docs ~\Documents
 "----------------- pc specific
+"The username on windows - update this when changing computers later
 if expand("$USERNAME") == "MoffettS"
     "@work
     echom "loading work stuff"
@@ -295,42 +305,38 @@ nnoremap <silent><C-J> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
 nnoremap <silent><C-K> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
 nnoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
 nnoremap <silent><C-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+inoremap <silent><C-J> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
+inoremap <silent><C-K> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
+inoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+inoremap <silent><C-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " Bind r to show reg
 nnoremap <Leader>r :reg<CR>
 
-
+"Yanking and putting to and from clipboard
 nnoremap <leader>y "*y
 nnoremap <leader>Y "*Y
 nnoremap <leader>p "*p
-inoremap <leader>p "*p
+nnoremap <leader>]p "*]p
+inoremap <leader>p <Esc>"*p
+inoremap <leader>]p <Esc>"*]p
 nnoremap <leader>P "*P
-
-" Bind <Leader><Leader>p to put on new line below
-nnoremap <Leader><Leader>p o<Esc>p
-
-" Bind <Leader><Leader>p to put clipboard on new line below
-nnoremap <Leader><Leader><Leader>p o<Esc>"*p
-
-" Same thing but using z reg
-nnoremap <Leader><Leader>zp o<Esc>"zp
+nnoremap <leader>]P "*]P
+inoremap <leader>P <Esc>"*P
+inoremap <leader>]P <Esc>"*]P
 
 " Shortcut for using z reg
 nnoremap z "z
 vnoremap z "z
 
-" Binding <Leader>bh(d/dd) for blackhole delete aka delete to blackhole register
-nnoremap <Leader>bhd "_d
-nnoremap <Leader>bhdd "_dd
-
+nnoremap _ "_
 " -----------------------------------------------------------------------------
 
-" INSERT MODE SHIT ---------------------------------------------------------
-" Blank line above w/ alt+enter (Note: works b/c O makes newline, 2g; goes to
-" 2 changes ago and back to insert
-inoremap <a-enter> <Esc>O<Esc>2g;i
-nnoremap <a-enter> O<Esc>2g;i<Esc>
+"change cwd to directory of current buffer, for all windows
+nnoremap <Leader>cd :cd %:p:h<CR>
 
+"change cwd to directory of current buffer, for cur window
+nnoremap <Leader>lcd :lcd %:p:h<CR>
 
 
 "PLUGIN SHIT--------------------------------------------------------------------------
