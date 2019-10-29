@@ -83,9 +83,6 @@ set signcolumn=yes
 "----------------------------------------------------------------------
 colorscheme onedark
 
-"necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
-GuiPopupmenu 0
-
 set hidden
 
 set noshowmode
@@ -136,6 +133,9 @@ set expandtab
 
 "open nerdtree on vim startup
 autocmd vimenter * NERDTree
+
+"show hidden files by default
+let NERDTreeShowHidden=1
 
 "close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -221,14 +221,6 @@ inoremap <A-t> <Esc>:vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\G
 
 "nnoremap <A-f> :vs .<Home>
 
-"Use <Leader>rl to reload init.vim & echom reloaded
-nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
-
-"Use <Leader>init to edit init.vim in vsplit
-nnoremap <Leader>vinit :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
-nnoremap <Leader>tinit :tabe ~\.config\nvim\init.vim<CR>
-nnoremap <Leader>init :spl ~\.config\nvim\init.vim<CR>
-nnoremap <Leader>hinit :spl ~\.config\nvim\init.vim<CR>
 nnoremap <Leader>b :ls<CR>:b<space>
 
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
@@ -291,9 +283,26 @@ if expand("$USERNAME") == "MoffettS"
     " doesnt work
     "nnoremap <Leader>cdk :e kyb<CR>
     nnoremap <Leader>ff vf{%zf
+
+    "Use <Leader>rl to reload init.vim & echom reloaded
+    nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
+
+    "Use <Leader>init to edit init.vim in vsplit
+    nnoremap <Leader>vinit :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
+    nnoremap <Leader>tinit :tabe ~\.config\nvim\init.vim<CR>
+    nnoremap <Leader>init :spl ~\.config\nvim\init.vim<CR>
+    nnoremap <Leader>hinit :spl ~\.config\nvim\init.vim<CR>
+
+    "necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
+    GuiPopupmenu 0
+
 else
     "not @work
-    echom "not loading work stuff"
+    nnoremap <Leader>rl :source ~/.config/nvim/init.vim<CR>
+    nnoremap <Leader>vinit :vsplit<CR>:e ~/.config/nvim/init.vim<CR>
+    nnoremap <Leader>tinit :tabe ~/.config/nvim/init.vim<CR>
+    nnoremap <Leader>init :spl ~/.config/nvim/init.vim<CR>
+    nnoremap <Leader>hinit :spl ~/.config/nvim/init.vim<CR>
 endif
 "----------------------------
 
