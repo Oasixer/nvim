@@ -141,6 +141,7 @@ let NERDTreeShowHidden=1
 "close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
+let NERDTreeShowLineNumbers=0
 
 " DOESNT WORK---------------------------
 "To map <Esc> to exit terminal-mode: >
@@ -261,11 +262,20 @@ nnoremap <Leader>na :set nonumber norelativenumber<CR>:set number<CR>
 "set no numbers
 nnoremap <Leader>nn :set nonumber<CR>
 
+function! NoRelNumIfNerdTree()
+    let isNERDTreeBuffer = (bufname("%") =~ "NERD_Tree_")?1:0
+    if isNERDTreeBuffer
+        "no line numbers in nerdtree
+        set norelativenumber
+    endif
+endfunction
+
 "line numbering
 set number relativenumber
 augroup numbertoggle
 	autocmd!
 	autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+	autocmd BufEnter,FocusGained,InsertLeave * call NoRelNumIfNerdTree()
 	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
 augroup END
 
