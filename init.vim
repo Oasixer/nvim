@@ -41,7 +41,7 @@ Plug 'scrooloose/nerdtree'
 "syntax linter
 "Plug 'w0rp/ale' "ryan
 "same thing - not sure which one works
-"Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 
 "latex
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
@@ -287,7 +287,6 @@ if expand("$USERNAME") == "MoffettS"
     "@work
     echom "loading work stuff"
     cabbrev kyb ~\Documents\KYB_Form\KYB_FORM
-    cabbrev init ~\.config\nvim\init.vim
     cd ~/Documents
     nnoremap <Leader>kb i<C-c>kb<CR>
     tnoremap <Leader>kb <C-c>kb<CR>
@@ -295,27 +294,21 @@ if expand("$USERNAME") == "MoffettS"
     "nnoremap <Leader>cdk :e kyb<CR>
     nnoremap <Leader>ff vf{%zf
 
-    "Use <Leader>rl to reload init.vim & echom reloaded
-    nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
-
-    "Use <Leader>init to edit init.vim in vsplit
-    nnoremap <Leader>vinit :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
-    nnoremap <Leader>tinit :tabe ~\.config\nvim\init.vim<CR>
-    nnoremap <Leader>init :spl ~\.config\nvim\init.vim<CR>
-    nnoremap <Leader>hinit :spl ~\.config\nvim\init.vim<CR>
-
     "necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
     GuiPopupmenu 0
 
 else
     "not @work
-    nnoremap <Leader>rl :source ~/.config/nvim/init.vim<CR>
-    nnoremap <Leader>vinit :vsplit<CR>:e ~/.config/nvim/init.vim<CR>
-    nnoremap <Leader>tinit :tabe ~/.config/nvim/init.vim<CR>
-    nnoremap <Leader>init :spl ~/.config/nvim/init.vim<CR>
-    nnoremap <Leader>hinit :spl ~/.config/nvim/init.vim<CR>
 endif
 "----------------------------
+
+nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
+
+"Use <Leader>init to edit init.vim in vsplit
+nnoremap <Leader>vinit :vsplit<CR>:e ~\.config\nvim\init.vim<CR>
+nnoremap <Leader>tinit :tabe ~\.config\nvim\init.vim<CR>
+nnoremap <Leader>init :e ~\.config\nvim\init.vim<CR>
+nnoremap <Leader>hinit :spl ~\.config\nvim\init.vim<CR>
 
 
 " PASTING SHIT---------------------------------------------------------
@@ -325,10 +318,10 @@ nnoremap <silent><C-J> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
 nnoremap <silent><C-K> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
 nnoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
 nnoremap <silent><C-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
-inoremap <silent><C-J> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
-inoremap <silent><C-K> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
-inoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-inoremap <silent><C-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+inoremap <silent><C-J> <Esc>:m`:silent +g/\m^\s*$/d<CR>``:noh<CR>i
+inoremap <silent><C-K> <Esc>:m`:silent -g/\m^\s*$/d<CR>``:noh<CR>i
+inoremap <silent><C-j> <Esc>:set paste<CR>m`o<Esc>``:set nopaste<CR>i
+inoremap <silent><C-k> <Esc>:set paste<CR>m`O<Esc>``:set nopaste<CR>i
 
 " Bind r to show reg
 nnoremap <Leader>r :reg<CR>
@@ -367,8 +360,16 @@ noremap <C-n> :NERDTreeToggle<CR>
 " open Nerd Tree in folder of file in active buffer
 map <Leader>nt :NERDTree %:p:h<CR>
 
-"live preview toggle
-nnoremap <Leader>l :LLPStartPreview
+"live preview toggle (ryan)
+"nnoremap <Leader>l :LLPStartPreview
+
+" only run linters after saving file
+let g:ale_lint_on_text_changed = 'never'
+" also don't run when opening file
+let g:ale_lint_on_enter = 0
+
+let g:ale_fixers = ['yapf']
+"['prettier', 'eslint']
 
 ""autocomplete via coc " (Ryans version) -------------------------------
 "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
