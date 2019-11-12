@@ -73,6 +73,9 @@ Plug 'jupyter-vim/jupyter-vim'
 " TODOS
 Plug 'aserebryakov/vim-todo-lists'
 
+" Vimwiki (links between pages and shit for note taking)
+Plug 'vimwiki/vimwiki'
+
 call plug#end() 
 " end PLUGIN SHIT------------------------------------------------------------
 
@@ -257,14 +260,6 @@ nnoremap <Esc> :noh<CR>
 "------------------------------------------------------------
 
 
-" RELOAD init.vim 
-nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
-
-" Open init.vim
-command! Vinit vsplit ~\.config\nvim\init.vim
-command! Init e ~\.config\nvim\init.vim
-command! Tinit tabe ~\.config\nvim\init.vim
-command! Hinit split ~\.config\nvim\init.vim
 
 " Use alt h/j/k/l for :command autocomplete
 cnoremap <A-j> <C-n>
@@ -329,8 +324,25 @@ if expand("$USERNAME") == "MoffettS"
 
     "necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
     autocmd VimEnter * GuiPopupmenu 0
+
+    " Open init.vim
+    command! Vinit vsplit ~\.config\nvim\init.vim
+    command! Init e ~\.config\nvim\init.vim
+    command! Tinit tabe ~\.config\nvim\init.vim
+    command! Hinit split ~\.config\nvim\init.vim
+
+    " RELOAD init.vim 
+    nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
 else
     "not @work
+    " Open init.vim
+    command! Vinit vsplit ~/.config/nvim/init.vim
+    command! Init e ~/.config/nvim/init.vim
+    command! Tinit tabe ~/.config/nvim/init.vim
+    command! Hinit split ~/.config/nvim/init.vim
+
+    " RELOAD init.vim 
+    nnoremap <Leader>rl :source ~/.config/nvim/init.vim<CR>
 endif
 "----------------------------
 "
@@ -379,7 +391,6 @@ inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<T
 
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-"
 " Use K to show documentation in preview window
 "nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -468,6 +479,15 @@ endfunction
 command! Wswap :call WinBufSwap()
 map <Leader>bs <C-c>:call WinBufSwap()<CR>
 
+
+" VIMWIKI --------------------------------------
+let wiki_1 = {}
+let wiki_1.path = '~/Documents/notes/'
+let wiki_1_syntax = 'markdown'
+let wiki_1_ext = '.md'
+let g:vimwiki_list = [wiki_1]
+let g:vimwiki_ext2syntax = {'.md': 'markdown'}
+"let g:vimwiki_list = [{'path':'~/Documents/notes', 'path_html':'~/Documents/noteshtml/html/'}]
 
 "------------------------------------------------
 " SYNTAX SPECIFIC
