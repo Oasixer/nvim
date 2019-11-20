@@ -11,6 +11,9 @@ Plug 'sheerun/vim-polyglot'
 " Svelte syntax highlighting (integrates w/ polyglot)
 Plug 'evanleck/vim-svelte'
 
+" SCSS syntax highlighting
+Plug 'cakebaker/scss-syntax.vim'
+
 " Lightline (lightweight status line)
 Plug 'itchyny/lightline.vim'
 
@@ -71,17 +74,17 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 Plug 'jupyter-vim/jupyter-vim'
 
 " TODOS
-Plug 'aserebryakov/vim-todo-lists'
+"Plug 'aserebryakov/vim-todo-lists'
 
 " Vimwiki (links between pages and shit for note taking)
 Plug 'vimwiki/vimwiki'
 
 call plug#end() 
-" end PLUGIN SHIT------------------------------------------------------------
+" ------------------------------------------------------------
 
 
 " SETTINGS/OPTIONS ------------------------------------------------------------
-let mapleader = ","
+let mapleader = " "
 syntax on
 syntax enable "ryan
 
@@ -107,6 +110,8 @@ set cmdheight=2
 
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
+
+"set ttimeout=10
 
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
@@ -158,12 +163,6 @@ set confirm
 " Use visual bell instead of beeping when doing something wrong
 set visualbell
 
-" Indentation settings for using hard tabs for indent. Display tabs as
-" four characters wide.
-set shiftwidth=4
-set softtabstop=4
-set expandtab
-
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
 "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
@@ -182,7 +181,7 @@ endif
 
 "--------------------------------------------------------------------
 
-" VANILLA (NON PLUGIN) BINDINGS --------------------------------------
+" VANILLA BINDINGS --------------------------------------
 
 "bind redo to U ( tags: UNDO, REDO)
 nnoremap U <C-r>
@@ -209,7 +208,7 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
-"Use `ALT+{H,J,K,L}` to move windows from any mode: >
+"Use `ALT+{H,J,K,L}` to move windows (in SPLITS) from any mode:
 tnoremap <A-H> <C-\><C-N><C-w>H
 tnoremap <A-J> <C-\><C-N><C-w>J
 tnoremap <A-K> <C-\><C-N><C-w>K
@@ -222,6 +221,7 @@ inoremap <A-L> <C-\><C-N><C-w>L
 nnoremap <A-H> <C-w>H
 nnoremap <A-J> <C-w>J
 nnoremap <A-K> <C-w>K
+nnoremap <A-L> <C-w>L
 
 "Use `ALT+{-, =, _, +}` to vertically resize windows from any mode: >
 "Use `ALT+{n, m, N, M}` to horizontally resize windows from any mode: >
@@ -268,35 +268,36 @@ cnoremap <A-l> <space>
 cnoremap <A-h> <C-w>
 
 
-" YANK, PASTE, DELETE, PUT RELATED ---------------------------------------------
+" YANK, PASTE, DELETE, PUT, PRINT RELATED ---------------------------------------------
  
 " Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
 " which is the default
 nnoremap Y y$
 
 " DELETING / ADDING NEWLINES (BLANK LINES) ABOVE / BELOW
-nnoremap <silent><space>j :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nnoremap <silent><space>k :set paste<CR>m`O<Esc>``:set nopaste<CR>
-nnoremap <silent><space>J m`j"_dd``
-nnoremap <silent><space>K m`k"_dd``
+
+nnoremap <silent><Leader>j :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nnoremap <silent><Leader>k :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nnoremap <silent><Leader>J m`j"_dd``
+nnoremap <silent><Leader>K m`k"_dd``
 
 " Bind r to show reg
 nnoremap <Leader>r :reg<CR>
 
 "Yanking and putting to and from clipboard
-nnoremap <leader>y "*y
-vnoremap <leader>y "*y
-nnoremap <leader>Y "*Y
-nnoremap <leader>p "*p
-vnoremap <leader>p "*p
-nnoremap <leader>]p "*]p
-vnoremap <leader>]p "*]p
-inoremap <leader>p <Esc>"*p
-inoremap <leader>]p <Esc>"*]p
-nnoremap <leader>P "*P
-nnoremap <leader>]P "*]P
-inoremap <leader>P <Esc>"*P
-inoremap <leader>]P <Esc>"*]P
+nnoremap <Leader>y "*y
+vnoremap <Leader>y "*y
+nnoremap <Leader>Y "*Y
+nnoremap <Leader>p "*p
+vnoremap <Leader>p "*p
+nnoremap <Leader>]p "*]p
+vnoremap <Leader>]p "*]p
+" inoremap <Leader>p <Esc>"*p
+" inoremap <Leader>]p <Esc>"*]p
+nnoremap <Leader>P "*P
+nnoremap <Leader>]P "*]P
+" inoremap <Leader>P <Esc>"*P
+" inoremap <Leader>]P <Esc>"*]P
 
 " Shortcut for using z reg
 nnoremap z "z
@@ -378,10 +379,9 @@ let g:ale_lint_on_text_changed = 'never'
 " also don't run when opening file
 let g:ale_lint_on_enter = 0
 
-let g:ale_fixers = ['yapf']
-"['prettier', 'eslint']
+let g:ale_fixers = {'python':['yapf'], 'javascript':['eslint', 'prettier']}
 nnoremap <Leader>fix :ALEFix<CR>
-
+let b:ale_fixers = {'javascript': ['eslint', 'prettier'], 'python':['yapf']}
 " ----------------------------------------
 " COC AUTOCOMPLETE COMPLETION
 inoremap <expr> <A-j> pumvisible() ? "\<C-n>" : "\<A-j>"
@@ -437,10 +437,31 @@ let g:jedi#show_call_signatures = 1
     "autocmd!
     "autocmd FileType python setlocal 
 "augroup END
+"
+" NERDCOMMENTER COMMENTING COMMENTS
+" ---------------------------------------------------------------------------
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+" Use compact sexy comments
+let g:NERDCompactSexyComs = 1
 
+" html comment at end of line
+nnoremap <Leader>ch A <!--  --><Esc>3hi
+
+" html comment in front and behind block
+" also the dumbest fuckin script i've ever written
+command! -nargs=1 -range HB norm <line2>Go<!-- End of <args><Esc>b:s/>//ge<CR>A --><Esc>:s/>>$/>/ge<CR><line1>GO<<Esc>:s/>//ge<CR>a!-- Start of <args><Esc>bA --><Esc><line1>G
+nnoremap <Leader>cb vat:HB 
+vnoremap <Leader>cb :HB 
+
+" CSS COLORIZER
+let g:colorizer_fgcontrast = 0
+
+" END PLUGIN SHIT -----------------------------------------------
 
 " ---------------------------------------------------------------------------------
 " LONG ASS SCRIPTS AND SHIT
+
 
 " LINE NUMBERING RELATED ---------------------------------------
 " Fix relative numbers for nerdtree
@@ -487,14 +508,38 @@ let wiki_1_syntax = 'markdown'
 let wiki_1_ext = '.md'
 let g:vimwiki_list = [wiki_1]
 let g:vimwiki_ext2syntax = {'.md': 'markdown'}
-"let g:vimwiki_list = [{'path':'~/Documents/notes', 'path_html':'~/Documents/noteshtml/html/'}]
+
 
 "------------------------------------------------
 " SYNTAX SPECIFIC
-"
-" Python -----------------
-" Make a string into an f string and return to original position
-" (overwrites u mark!)
-inoremap <Leader>fs <Esc>mu:s/\(\W\)\(['"]\)/\1f\2<CR>:noh<Esc>`ula
-nnoremap <Leader>fs mu:s/\(\W\)\(['"]\)/\1f\2<CR>:noh<CR>`ul
 
+" Indentation settings for using hard tabs for indent. Display tabs as
+" four characters wide.
+set shiftwidth=4
+set expandtab "tab key becomes {shiftwidth} spaces
+set smartindent
+"  'ts' : number of spaces that <Tab> in file uses (tabstop)
+"  'sw'	: number of spaces to use for (auto)indent step (shiftwidth)
+
+" python, 4 spaces
+autocmd Filetype python setlocal ts=4 sw=4 expandtab smartindent
+
+" for html files, 2 spaces
+autocmd Filetype html setlocal ts=2 sw=2 expandtab smartindent
+
+" for js files, 2 spaces
+autocmd Filetype javascript setlocal ts=2 sw=2 expandtab smartindent
+
+" log + print
+autocmd Filetype javascript nnoremap <buffer> <Leader>l oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
+" log selected var w/ name in quotes in same statement
+autocmd Filetype javascript vnoremap <buffer> <Leader>l y<Esc>oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
+" log selected var w/ name in quotes in second statement
+autocmd Filetype javascript vnoremap <buffer> <Leader>ll y<Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
+autocmd Filetype javascript iabbrev clog console.log();
+
+" SCSS SASS SYNTAX HIGHLIGHTING ----------------------
+au! BufRead,BufNewFile *.scss setfiletype scss
+autocmd Filetype scss setlocal ts=2 sw=2 expandtab smartindent
+
+filetype plugin on
