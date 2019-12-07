@@ -433,6 +433,9 @@ nnoremap <buffer> <silent> <Leader>X :JupyterSendCell<CR>
 let g:jedi#completions_enabled = 0
 let g:jedi#show_call_signatures = 1
 let g:jedi#auto_vim_configuration = 0
+" Some useful default keybinds: 
+" <Leader>d goto definition
+
 "augroup python
     "autocmd!
     "autocmd FileType python setlocal 
@@ -445,14 +448,6 @@ let g:NERDSpaceDelims = 1
 " Use compact sexy comments
 let g:NERDCompactSexyComs = 1
 
-" html comment at end of line
-nnoremap <Leader>ch A <!--  --><Esc>3hi
-
-" html comment in front and behind block
-" also the dumbest fuckin script i've ever written
-command! -nargs=1 -range HB norm <line2>Go<!-- End of <args><Esc>b:s/>//ge<CR>A --><Esc>:s/>>$/>/ge<CR><line1>GO<<Esc>:s/>//ge<CR>a!-- Start of <args><Esc>bA --><Esc><line1>G
-nnoremap <Leader>cb vat:HB 
-vnoremap <Leader>cb :HB 
 
 " CSS COLORIZER
 let g:colorizer_fgcontrast = 0
@@ -500,6 +495,28 @@ endfunction
 command! Wswap :call WinBufSwap()
 map <Leader>bs <C-c>:call WinBufSwap()<CR>
 
+function! s:Surround()
+  let chr = nr2char(getchar())
+  return "viws" . chr . chr . "\<esc>P"
+endfunction
+
+" note: <Nop> or <nop> does nothing, this is so that you can cancel w/ esc
+nnoremap yso<esc> <nop>
+" note: <SID> tells vim to look ONLY for locally defined mappings in RHS
+" note: <expr> tells vim that the rhs is an expression to evaluate
+nnoremap <expr> yso <SID>Surround()
+" the reason that the binding above is yso is:
+" y: the keybind from vim surround to add a surrounding
+" s: surrounding
+" o: since i use camelCaseWords/motions, o means original definition of a
+" word, so that wordWord will all be surrounded instead of just 'word'Word
+
+
+
+" Extremely specific command to fix ALE on my windows PC b/c ALE always failes
+" to create the temp folder that it needs
+command! -nargs=1 ALEDir !C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe -c "mkdir -p ~/AppData/Local/Temp/1/nvim<args>"
+
 
 " VIMWIKI --------------------------------------
 let wiki_1 = {}
@@ -523,23 +540,41 @@ set smartindent
 
 " python, 4 spaces
 autocmd Filetype python setlocal ts=4 sw=4 expandtab smartindent
+autocmd Filetype python nnoremap <buffer> <Leader>fs mu:s/\(\W\)\(['"]\)/\1f\2<CR>:noh<CR>`ul
 
 " for html files, 2 spaces
 autocmd Filetype html setlocal ts=2 sw=2 expandtab smartindent
+
+" html comment at end of line
+autocmd Filetype html,svelte nnoremap <Leader>ch A <!--  --><Esc>3hi
+
+" html comment in front and behind block
+" also the dumbest fuckin script i've ever written
+autocmd Filetype html,svelte command! -nargs=1 -range HB norm <line2>Go<!-- End of <args><Esc>b:s/>//ge<CR>A --><Esc>:s/>>$/>/ge<CR><line1>GO<<Esc>:s/>//ge<CR>a!-- Start of <args><Esc>bA --><Esc><line1>G
+
+autocmd Filetype html,svelte nnoremap <Leader>cb vat:HB 
+autocmd Filetype html,svelte vnoremap <Leader>cb :HB 
+
+" Html comment out
+autocmd Filetype html,svelte vnoremap <Leader>co <Esc>`<I<!--  <Esc>`>A  --><Esc>
 
 " for js files, 2 spaces
 autocmd Filetype javascript setlocal ts=2 sw=2 expandtab smartindent
 
 " log + print
-autocmd Filetype javascript nnoremap <buffer> <Leader>l oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
+autocmd Filetype javascript,svelte nnoremap <buffer> <Leader>l oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
 " log selected var w/ name in quotes in same statement
-autocmd Filetype javascript vnoremap <buffer> <Leader>l y<Esc>oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
+autocmd Filetype javascript,svelte vnoremap <buffer> <Leader>l y<Esc>oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
 " log selected var w/ name in quotes in second statement
-autocmd Filetype javascript vnoremap <buffer> <Leader>ll y<Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
-autocmd Filetype javascript iabbrev clog console.log();
+autocmd Filetype javascript,svelte vnoremap <buffer> <Leader>ll y<Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
+autocmd Filetype javascript,svelte iabbrev clog console.log();
 
 " SCSS SASS SYNTAX HIGHLIGHTING ----------------------
 au! BufRead,BufNewFile *.scss setfiletype scss
 autocmd Filetype scss setlocal ts=2 sw=2 expandtab smartindent
 
 filetype plugin on
+
+
+" Things to remember!
+" o to switch sides of visual selection!!
