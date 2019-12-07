@@ -358,7 +358,7 @@ autocmd vimenter * NERDTree
 let NERDTreeShowHidden=1
 
 "close vim if the only window left open is a NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 let NERDTreeShowLineNumbers=0
 "nerd tree toggle
@@ -432,7 +432,7 @@ nnoremap <buffer> <silent> <Leader>X :JupyterSendCell<CR>
 " JEDI AUTOCOMPLETE COMPLETION FUNCTIONS DOCS--------
 let g:jedi#completions_enabled = 0
 let g:jedi#show_call_signatures = 1
-
+let g:jedi#auto_vim_configuration = 0
 "augroup python
     "autocmd!
     "autocmd FileType python setlocal 
