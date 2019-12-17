@@ -8,7 +8,6 @@
         "wxss"
     ],
 
-"http.proxy":"localhost:3128",
 "http.proxyStrictSSL":false,
 "suggest.noselect": false"
 }
