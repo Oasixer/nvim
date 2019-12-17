@@ -97,8 +97,8 @@ let g:lightline = {
     \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
     \ },
     \ 'component_function': {
-    \   'gitbranch': 'gitbranch#name'
-    \ },
+    \   'gitbranch': 'gitbranch#name',
+    \   'filename': 'LightlineFilename'},
     \ }
 "suggested by coc documentation --------------------------------------
 " Some servers have issues with backup files, see #649
@@ -251,15 +251,37 @@ nnoremap <A-c> :close<CR>
 cnoremap <A-c> <C-u>close<CR>
 tnoremap <A-c> :close<CR>
 " --------------------------------------------
- 
-" Map <C-L> (redraw screen) to also turn off search highlighting until the
-" next search
-nnoremap <C-L> :nohl<CR><C-L>
-nnoremap <Esc> :noh<CR>
+" TAB MANAGEMENT STUFF
+
+" GOTO Tab N
+nnoremap <Leader>1 1gt
+nnoremap <Leader>2 2gt
+nnoremap <Leader>3 3gt
+nnoremap <Leader>4 4gt
+nnoremap <Leader>5 5gt
+nnoremap <Leader>6 6gt
+nnoremap <Leader>7 7gt
+nnoremap <Leader>8 8gt
+nnoremap <Leader>9 9gt
+nnoremap <Leader>0 :tablast<CR>
+
+" Switch between last active tab and cur tab
+au TabLeave * let g:lasttab = tabpagenr()
+vnoremap <silent> <Leader>l :exe "tabn ".g:lasttab<cr>
+nnoremap <silent> <Leader>l :exe "tabn ".g:lasttab<cr>
+
+" Shift tab to zero indexed position N
+nnoremap <silent> <Leader>! :tabm 0<CR>
+nnoremap <silent> <Leader>@ :tabm 1<CR>
+nnoremap <silent> <Leader># :tabm 2<CR>
+nnoremap <silent> <Leader>$ :tabm 3<CR>
+nnoremap <silent> <Leader>% :tabm 4<CR>
+nnoremap <silent> <Leader>) :tabm<CR>
+
  
 "------------------------------------------------------------
-
-
+" Make esc hide highlights
+nnoremap <silent> <Esc> :noh<CR>
 
 " Use alt h/j/k/l for :command autocomplete
 cnoremap <A-j> <C-n>
@@ -319,9 +341,8 @@ if expand("$USERNAME") == "MoffettS"
     "@work
     echom "loading work stuff"
     cd ~/Documents
-    nnoremap <Leader>tt :term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
-    nnoremap <A-t> :vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
-    inoremap <A-t> <Esc>:vsplit<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>i
+    command! Hterm norm :new<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
+    command! Vterm norm :vnew<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
 
     "necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
     autocmd VimEnter * GuiPopupmenu 0
@@ -333,7 +354,7 @@ if expand("$USERNAME") == "MoffettS"
     command! Hinit split ~\.config\nvim\init.vim
 
     " RELOAD init.vim 
-    nnoremap <Leader>rl :source ~\.config\nvim\init.vim<CR>
+    command! RL source ~\.config\nvim\init.vim
 else
     "not @work
     " Open init.vim
@@ -343,7 +364,7 @@ else
     command! Hinit split ~/.config/nvim/init.vim
 
     " RELOAD init.vim 
-    nnoremap <Leader>rl :source ~/.config/nvim/init.vim<CR>
+    command! RL source ~/.config/nvim/init.vim
 endif
 "----------------------------
 "
@@ -445,7 +466,7 @@ let g:jedi#show_call_signatures = 1
 " ---------------------------------------------------------------------------
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
-" Use compact sexy comments
+" Use compact sexy comments (<space>cs)
 let g:NERDCompactSexyComs = 1
 
 
@@ -517,6 +538,14 @@ nnoremap <expr> yso <SID>Surround()
 " to create the temp folder that it needs
 command! -nargs=1 ALEDir !C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe -c "mkdir -p ~/AppData/Local/Temp/1/nvim<args>"
 
+function! LightlineFilename()
+  let root = fnamemodify(get(b:, 'git_dir'), ':h')
+  let path = expand('%:p')
+  if path[:len(root)-1] ==# root
+    return path[len(root)+1:]
+  endif
+  return expand('%')
+endfunction
 
 " VIMWIKI --------------------------------------
 let wiki_1 = {}
@@ -545,6 +574,9 @@ autocmd Filetype python nnoremap <buffer> <Leader>fs mu:s/\(\W\)\(['"]\)/\1f\2<C
 " for html files, 2 spaces
 autocmd Filetype html setlocal ts=2 sw=2 expandtab smartindent
 
+" for svelte files, 2 spaces
+autocmd Filetype svelte setlocal ts=2 sw=2 expandtab smartindent
+
 " html comment at end of line
 autocmd Filetype html,svelte nnoremap <Leader>ch A <!--  --><Esc>3hi
 
@@ -560,14 +592,11 @@ autocmd Filetype html,svelte vnoremap <Leader>co <Esc>`<I<!--  <Esc>`>A  --><Esc
 
 " for js files, 2 spaces
 autocmd Filetype javascript setlocal ts=2 sw=2 expandtab smartindent
-
-" log + print
-autocmd Filetype javascript,svelte nnoremap <buffer> <Leader>l oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
-" log selected var w/ name in quotes in same statement
-autocmd Filetype javascript,svelte vnoremap <buffer> <Leader>l y<Esc>oconsole.log("<Esc>pa"+<Esc>pa);<Esc>
 " log selected var w/ name in quotes in second statement
-autocmd Filetype javascript,svelte vnoremap <buffer> <Leader>ll y<Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
-autocmd Filetype javascript,svelte iabbrev clog console.log();
+autocmd Filetype javascript,svelte command! Clog norm <Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
+autocmd Filetype javascript,svelte iabbrev clog console.log(
+autocmd Filetype javascript,svelte iabbrev clog2 $: console.log(`: ${}`);
+autocmd Filetype javascript,svelte iabbrev foreach myArray.forEach(function (i, n) {<CR><CR>});
 
 " SCSS SASS SYNTAX HIGHLIGHTING ----------------------
 au! BufRead,BufNewFile *.scss setfiletype scss
