@@ -352,7 +352,7 @@ endif
 
 " NERDTREE ------------------------------------------
 "open nerdtree on vim startup
-autocmd vimenter * NERDTree
+"autocmd vimenter call LaunchNerdtreeIfNotDisabled()
 
 "show hidden files by default
 let NERDTreeShowHidden=1
