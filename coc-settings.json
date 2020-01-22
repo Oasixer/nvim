@@ -1,5 +1,4 @@
 {
-    // supported css file types
     "css.filetypes": [
         "css",
         "svelte",
@@ -7,7 +6,5 @@
         "less",
         "wxss"
     ],
-
-"http.proxyStrictSSL":false,
-"suggest.noselect": false"
+    "suggest.noselect": false,
 }

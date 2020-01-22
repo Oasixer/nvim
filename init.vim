@@ -307,9 +307,9 @@ nnoremap <silent><Leader>K m`k"_dd``
 nnoremap <Leader>r :reg<CR>
 
 "Yanking and putting to and from clipboard
-nnoremap <Leader>y "*y
-vnoremap <Leader>y "*y
-nnoremap <Leader>Y "*Y
+nnoremap <Leader>y "+y
+vnoremap <Leader>y "+y
+nnoremap <Leader>Y "+Y
 nnoremap <Leader>p "*p
 vnoremap <Leader>p "*p
 nnoremap <Leader>]p "*]p
@@ -337,25 +337,16 @@ nnoremap <Leader>cd :cd %:p:h<CR>
 nnoremap <Leader>lcd :lcd %:p:h<CR>
 
 " COMPUTER / PC SPECIFIC -----------------------------------------------------
-if expand("$USERNAME") == "MoffettS"
+" if expand("$USERNAME") == "MoffettS"
     "@work
-    echom "loading work stuff"
-    cd ~/Documents
-    command! Hterm norm :new<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
-    command! Vterm norm :vnew<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
+    " echom "loading work stuff"
+    " cd ~/Documents
+    " command! Hterm norm :new<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
+    " command! Vterm norm :vnew<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
 
     "necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
-    autocmd VimEnter * GuiPopupmenu 0
-
-    " Open init.vim
-    command! Vinit vsplit ~\.config\nvim\init.vim
-    command! Init e ~\.config\nvim\init.vim
-    command! Tinit tabe ~\.config\nvim\init.vim
-    command! Hinit split ~\.config\nvim\init.vim
-
-    " RELOAD init.vim 
-    command! RL source ~\.config\nvim\init.vim
-else
+    " autocmd VimEnter * GuiPopupmenu 0
+" else
     "not @work
     " Open init.vim
     command! Vinit vsplit ~/.config/nvim/init.vim
@@ -365,7 +356,7 @@ else
 
     " RELOAD init.vim 
     command! RL source ~/.config/nvim/init.vim
-endif
+" endif
 "----------------------------
 "
 
@@ -518,6 +509,14 @@ map <Leader>bs <C-c>:call WinBufSwap()<CR>
 
 function! s:Surround()
   let chr = nr2char(getchar())
+  if chr == '}' || chr=='{':
+      return "viws" . "'" . "'". "\<esc>Pcs'}"
+  if chr == ')' || chr=='(':
+      return "viws" . "'" . "'". "\<esc>Pcs')"
+  if chr == '>' || chr=='<':
+      return "viws" . "'" . "'". "\<esc>Pcs'>"
+  if chr == ']' || chr=='[':
+      return "viws" . "'" . "'". "\<esc>Pcs']"
   return "viws" . chr . chr . "\<esc>P"
 endfunction
 
