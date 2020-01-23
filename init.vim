@@ -589,6 +589,9 @@ autocmd Filetype html,svelte vnoremap <Leader>cb :HB
 " Html comment out
 autocmd Filetype html,svelte vnoremap <Leader>co <Esc>`<I<!--  <Esc>`>A  --><Esc>
 
+" for ino files, 2 spaces
+autocmd Filetype arduino setlocal ts=2 sw=2 expandtab smartindent
+
 " for js files, 2 spaces
 autocmd Filetype javascript setlocal ts=2 sw=2 expandtab smartindent
 " log selected var w/ name in quotes in second statement
