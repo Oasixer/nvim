@@ -296,6 +296,12 @@ cnoremap <A-h> <C-w>
 " which is the default
 nnoremap Y y$
 
+" VIMGREP grep search related
+vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
+nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
+nnoremap <Leader>vn :cnext<CR>
+nnoremap <Leader>vN :cprev<CR>
+
 " DELETING / ADDING NEWLINES (BLANK LINES) ABOVE / BELOW
 
 nnoremap <silent><Leader>j :set paste<CR>m`o<Esc>``:set nopaste<CR>
@@ -509,15 +515,17 @@ map <Leader>bs <C-c>:call WinBufSwap()<CR>
 
 function! s:Surround()
   let chr = nr2char(getchar())
-  if chr == '}' || chr=='{':
-      return "viws" . "'" . "'". "\<esc>Pcs'}"
-  if chr == ')' || chr=='(':
-      return "viws" . "'" . "'". "\<esc>Pcs')"
-  if chr == '>' || chr=='<':
-      return "viws" . "'" . "'". "\<esc>Pcs'>"
-  if chr == ']' || chr=='[':
-      return "viws" . "'" . "'". "\<esc>Pcs']"
-  return "viws" . chr . chr . "\<esc>P"
+  if chr == '}' || chr=='{'
+      return "viws" . "{" . "}". "\<esc>P"
+  elseif chr == ')' || chr=='('
+      return "viws" . "(" . ")". "\<esc>P"
+  elseif chr == '>' || chr=='<'
+      return "viws" . "<" . ">". "\<esc>P"
+  elseif chr == ']' || chr=='['
+      return "viws" . "[" . "]". "\<esc>P"
+  else
+      return "viws" . chr . chr . "\<esc>P"
+  endif
 endfunction
 
 " note: <Nop> or <nop> does nothing, this is so that you can cancel w/ esc
