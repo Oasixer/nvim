@@ -71,7 +71,7 @@ Plug 'dense-analysis/ale'
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 
 " Jupyter
-Plug 'jupyter-vim/jupyter-vim'
+" Plug 'jupyter-vim/jupyter-vim'
 
 " TODOS
 "Plug 'aserebryakov/vim-todo-lists'
@@ -301,6 +301,15 @@ vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
 nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
 nnoremap <Leader>vn :cnext<CR>
 nnoremap <Leader>vN :cprev<CR>
+
+command! -nargs=+ GrepFiles call GrepFiles(<f-args>)
+function! GrepFiles( ... )
+    cd %:p:h
+    let curFile = expand("%")
+    arg ./*.*
+    execute printf('argdo %%substitute%s | update', a:1)
+    execute printf('edit %s', curFile)
+endfunction
 
 " DELETING / ADDING NEWLINES (BLANK LINES) ABOVE / BELOW
 
