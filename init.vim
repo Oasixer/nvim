@@ -603,8 +603,15 @@ autocmd Filetype html,svelte command! -nargs=1 -range HB norm <line2>Go<!-- End 
 autocmd Filetype html,svelte nnoremap <Leader>cb vat:HB 
 autocmd Filetype html,svelte vnoremap <Leader>cb :HB 
 
-" Html comment out
-autocmd Filetype html,svelte vnoremap <Leader>co <Esc>`<I<!--  <Esc>`>A  --><Esc>
+" Html comment
+function! HtmlCommentToggle()
+    :norm I<!-- 
+    :s/^<!-- <!-- //e
+    :norm A -->
+    :s/ --> -->$//e
+endfunction
+
+autocmd Filetype html,svelte noremap <Leader>ch :call HtmlCommentToggle()<CR>
 
 " for ino files, 2 spaces
 autocmd Filetype arduino setlocal ts=2 sw=2 expandtab smartindent
