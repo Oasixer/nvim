@@ -606,9 +606,9 @@ autocmd Filetype html,svelte vnoremap <Leader>cb :HB
 " Html comment
 function! HtmlCommentToggle()
     :norm I<!-- 
-    :s/^<!-- <!-- //e
+    :s/<!-- <!-- //e
     :norm A -->
-    :s/ --> -->$//e
+    :s/ --> -->//e
 endfunction
 
 autocmd Filetype html,svelte noremap <Leader>ch :call HtmlCommentToggle()<CR>
