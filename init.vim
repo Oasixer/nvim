@@ -11,6 +11,9 @@ Plug 'sheerun/vim-polyglot'
 " Svelte syntax highlighting (integrates w/ polyglot)
 Plug 'evanleck/vim-svelte'
 
+" CPP syntax highlighting (integrates w/ polyglot)
+Plug 'octol/vim-cpp-enhanced-highlight'
+
 " SCSS syntax highlighting
 Plug 'cakebaker/scss-syntax.vim'
 
@@ -351,28 +354,13 @@ nnoremap <Leader>cd :cd %:p:h<CR>
 "change cwd to directory of current buffer, for cur window
 nnoremap <Leader>lcd :lcd %:p:h<CR>
 
-" COMPUTER / PC SPECIFIC -----------------------------------------------------
-" if expand("$USERNAME") == "MoffettS"
-    "@work
-    " echom "loading work stuff"
-    " cd ~/Documents
-    " command! Hterm norm :new<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
-    " command! Vterm norm :vnew<CR>:term "C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe"<CR>
+command! Vinit vsplit ~/.config/nvim/init.vim
+command! Init e ~/.config/nvim/init.vim
+command! Tinit tabe ~/.config/nvim/init.vim
+command! Hinit split ~/.config/nvim/init.vim
 
-    "necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
-    " autocmd VimEnter * GuiPopupmenu 0
-" else
-    "not @work
-    " Open init.vim
-    command! Vinit vsplit ~/.config/nvim/init.vim
-    command! Init e ~/.config/nvim/init.vim
-    command! Tinit tabe ~/.config/nvim/init.vim
-    command! Hinit split ~/.config/nvim/init.vim
-
-    " RELOAD init.vim 
-    command! RL source ~/.config/nvim/init.vim
-" endif
-"----------------------------
+" RELOAD init.vim 
+command! RL source ~/.config/nvim/init.vim
 "
 
 "PLUGIN SHIT--------------------------------------------------------------------------
@@ -549,10 +537,14 @@ nnoremap <expr> yso <SID>Surround()
 " word, so that wordWord will all be surrounded instead of just 'word'Word
 
 
-
 " Extremely specific command to fix ALE on my windows PC b/c ALE always failes
 " to create the temp folder that it needs
 command! -nargs=1 ALEDir !C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe -c "mkdir -p ~/AppData/Local/Temp/1/nvim<args>"
+
+" Extremely specific command to copy the filetype specific script folder to
+" the runtimepath location that it is looking for the folder in on windows.
+" (hardcoded)
+command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
 
 function! LightlineFilename()
   let root = fnamemodify(get(b:, 'git_dir'), ':h')
@@ -582,6 +574,7 @@ set expandtab "tab key becomes {shiftwidth} spaces
 set smartindent
 "  'ts' : number of spaces that <Tab> in file uses (tabstop)
 "  'sw'	: number of spaces to use for (auto)indent step (shiftwidth)
+
 
 " python, 4 spaces
 autocmd Filetype python setlocal ts=4 sw=4 expandtab smartindent
@@ -617,7 +610,7 @@ autocmd Filetype html,svelte noremap <Leader>ch :call HtmlCommentToggle()<CR>
 autocmd Filetype arduino setlocal ts=2 sw=2 expandtab smartindent
 
 " for js files, 2 spaces
-autocmd Filetype javascript setlocal ts=2 sw=2 expandtab smartindent
+autocmd Filetype javascript,cpp setlocal ts=2 sw=2 expandtab smartindent
 " log selected var w/ name in quotes in second statement
 autocmd Filetype javascript,svelte command! Clog norm <Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
 autocmd Filetype javascript,svelte iabbrev clog console.log(
@@ -629,7 +622,6 @@ au! BufRead,BufNewFile *.scss setfiletype scss
 autocmd Filetype scss setlocal ts=2 sw=2 expandtab smartindent
 
 filetype plugin on
-
 
 " Things to remember!
 " o to switch sides of visual selection!!
