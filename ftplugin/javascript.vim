@@ -1,8 +1,6 @@
-nnoremap <buffer> <Leader>cle oconsole.log("+);<Esc>F"i
-nnoremap <buffer> <Leader>clp oconsole.log("<Esc>pa+);<Esc>F"i
-vnoremap <buffer> <Leader>cl y<Esc>oconsole.log(""+);<Esc>F"i
+" log selected var w/ name in quotes in second statement
+command! Clog norm <Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
+iabbrev <buffer> clog console.log(
+iabbrev <buffer> clog2 $: console.log(`: ${}`);
+iabbrev <buffer> foreach myArray.forEach(function (i, n) {<CR><CR>});
 
-nnoremap <buffer> a atest
-
-echom "SUCC"
-echo "SUCC"

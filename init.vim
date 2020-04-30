@@ -565,7 +565,8 @@ let g:vimwiki_ext2syntax = {'.md': 'markdown'}
 
 
 "------------------------------------------------
-" SYNTAX SPECIFIC
+" INDENTATION
+" filetype specific -> Moved to ftplugin/*.vim
 
 " Indentation settings for using hard tabs for indent. Display tabs as
 " four characters wide.
@@ -575,51 +576,8 @@ set smartindent
 "  'ts' : number of spaces that <Tab> in file uses (tabstop)
 "  'sw'	: number of spaces to use for (auto)indent step (shiftwidth)
 
-
-" python, 4 spaces
-autocmd Filetype python setlocal ts=4 sw=4 expandtab smartindent
-autocmd Filetype python nnoremap <buffer> <Leader>fs mu:s/\(\W\)\(['"]\)/\1f\2<CR>:noh<CR>`ul
-
-" for html files, 2 spaces
-autocmd Filetype html setlocal ts=2 sw=2 expandtab smartindent
-
-" for svelte files, 2 spaces
-autocmd Filetype svelte setlocal ts=2 sw=2 expandtab smartindent
-
-" html comment at end of line
-autocmd Filetype html,svelte nnoremap <Leader>ch A <!--  --><Esc>3hi
-
-" html comment in front and behind block
-" also the dumbest fuckin script i've ever written
-autocmd Filetype html,svelte command! -nargs=1 -range HB norm <line2>Go<!-- End of <args><Esc>b:s/>//ge<CR>A --><Esc>:s/>>$/>/ge<CR><line1>GO<<Esc>:s/>//ge<CR>a!-- Start of <args><Esc>bA --><Esc><line1>G
-
-autocmd Filetype html,svelte nnoremap <Leader>cb vat:HB 
-autocmd Filetype html,svelte vnoremap <Leader>cb :HB 
-
-" Html comment
-function! HtmlCommentToggle()
-    :norm I<!-- 
-    :s/<!-- <!-- //e
-    :norm A -->
-    :s/ --> -->//e
-endfunction
-
-autocmd Filetype html,svelte noremap <Leader>ch :call HtmlCommentToggle()<CR>
-
-" for ino files, 2 spaces
-autocmd Filetype arduino setlocal ts=2 sw=2 expandtab smartindent
-
-" for js files, 2 spaces
-autocmd Filetype javascript,cpp setlocal ts=2 sw=2 expandtab smartindent
-" log selected var w/ name in quotes in second statement
-autocmd Filetype javascript,svelte command! Clog norm <Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
-autocmd Filetype javascript,svelte iabbrev clog console.log(
-autocmd Filetype javascript,svelte iabbrev clog2 $: console.log(`: ${}`);
-autocmd Filetype javascript,svelte iabbrev foreach myArray.forEach(function (i, n) {<CR><CR>});
-
 " SCSS SASS SYNTAX HIGHLIGHTING ----------------------
 au! BufRead,BufNewFile *.scss setfiletype scss
-autocmd Filetype scss setlocal ts=2 sw=2 expandtab smartindent
 
 filetype plugin on
 

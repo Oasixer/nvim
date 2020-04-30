@@ -3,5 +3,4 @@
 " (overwrites u mark!)
 nnoremap <buffer> <Leader>fs mu:s/\(\W\)\(['"]\)/\1f\2<CR>:noh<CR>`ul
 
-echom "SUCC2"
-echo "SUCC3"
+setlocal ts=4 sw=4 expandtab smartindent
