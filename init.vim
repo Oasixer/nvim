@@ -33,12 +33,17 @@ Plug 'tpope/vim-surround'
 Plug 'https://tpope.io/vim/repeat.git'
 
 "autocomplete via COC
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" to install language servers after installing release branch (above), just
+" use CocInstall coc-css, CocInstall coc-python, etc.
+
+" build from source code (possibly needed @ CIBC for some reason? firewall?)
+" Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 "Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
 
 Plug 'davidhalter/jedi-vim'
 
@@ -299,17 +304,38 @@ cnoremap <A-h> <C-w>
 " which is the default
 nnoremap Y y$
 
-" VIMGREP grep search related
+" VIMGREP GREPFILES REPFILES grep search related
+" RepFiles is a little function that I made that runs a find and
+" replace on all the files in the enclosing directory of the current buffer.
+"
+" Usage :
+" Find old and replace with new in directory of cur buffer:
+"       using :RepFiles
+"               RepFiles /old/new/g
+"               
+" then use :vn and :vN to go through them
+
+" Find old and replace with new, recursively, in ENCLOSING directory of cur buffer:
+"     :RepFiles /old/new/g ../**/*
+
+" Shortcuts for using :vimgrep which does NOT replace
 vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
 nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
 nnoremap <Leader>vn :cnext<CR>
 nnoremap <Leader>vN :cprev<CR>
 
-command! -nargs=+ GrepFiles call GrepFiles(<f-args>)
-function! GrepFiles( ... )
+command! -nargs=+ RepFiles call RepFiles(<f-args>)
+function! RepFiles( ... )
     cd %:p:h
     let curFile = expand("%")
-    arg ./*.*
+    if (a:0 < 2)
+        arg ./*.*
+        args
+    else
+        " echo a:2
+        execute printf('arg %s', a:2)
+        args
+    endif
     execute printf('argdo %%substitute%s | update', a:1)
     execute printf('edit %s', curFile)
 endfunction
@@ -541,10 +567,6 @@ nnoremap <expr> yso <SID>Surround()
 " to create the temp folder that it needs
 command! -nargs=1 ALEDir !C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe -c "mkdir -p ~/AppData/Local/Temp/1/nvim<args>"
 
-" Extremely specific command to copy the filetype specific script folder to
-" the runtimepath location that it is looking for the folder in on windows.
-" (hardcoded)
-command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
 
 function! LightlineFilename()
   let root = fnamemodify(get(b:, 'git_dir'), ':h')
@@ -563,6 +585,20 @@ let wiki_1_ext = '.md'
 let g:vimwiki_list = [wiki_1]
 let g:vimwiki_ext2syntax = {'.md': 'markdown'}
 
+" PLATFORM/OS SPECIFIC:
+" WINDOWS ONLY
+if(has('win32'))
+    " On windows I use Neovim-qt, and the default path in vim is wherever you
+    " started, which is great for consoles, but really annoying when I open
+    " the program in windows using a desktop shortcut
+    cd ~
+    " reminder: to move nerdtree to CWD, use CD in nerdtree window
+endif
+
+" Extremely specific command to copy the filetype specific script folder to
+" the runtimepath location that it is looking for the folder in on windows.
+" (hardcoded)
+command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
 
 "------------------------------------------------
 " INDENTATION
@@ -577,7 +613,7 @@ set smartindent
 "  'sw'	: number of spaces to use for (auto)indent step (shiftwidth)
 
 " SCSS SASS SYNTAX HIGHLIGHTING ----------------------
-au! BufRead,BufNewFile *.scss setfiletype scss
+" au! BufRead,BufNewFile *.scss setfiletype scss
 
 filetype plugin on
 
