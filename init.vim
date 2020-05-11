@@ -294,7 +294,7 @@ nnoremap <silent> <Esc> :noh<CR>
 " Use alt h/j/k/l for :command autocomplete
 cnoremap <A-j> <C-n>
 cnoremap <A-k> <C-p>
-cnoremap <A-l> <space>
+cnoremap <A-l> <space><backspace>
 cnoremap <A-h> <C-w>
 
 
