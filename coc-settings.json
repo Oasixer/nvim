@@ -4,7 +4,10 @@
         "svelte",
         "scss",
         "less",
-        "wxss"
+        "wxss",
+        "cpp",
+        "c",
+        "h"
     ],
     "suggest.noselect": false,
 }
