@@ -45,6 +45,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
 " Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
 
+"Plug 'jackguo380/vim-lsp-cxx-highlight'
+
 Plug 'davidhalter/jedi-vim'
 
 "bunch of snippets
@@ -357,7 +359,13 @@ nnoremap <Leader>Y "+Y
 nnoremap <Leader>p "*p
 vnoremap <Leader>p "*p
 nnoremap <Leader>]p "*]p
+nnoremap <Leader>[p "*[p
 vnoremap <Leader>]p "*]p
+vnoremap <Leader>[p "*[p
+nnoremap <Leader>]P "*]P
+nnoremap <Leader>[P "*[P
+vnoremap <Leader>]P "*]P
+vnoremap <Leader>[P "*[P
 " inoremap <Leader>p <Esc>"*p
 " inoremap <Leader>]p <Esc>"*]p
 nnoremap <Leader>P "*P
@@ -414,17 +422,20 @@ map <Leader>nt :NERDTree %:p:h<CR>
 "nnoremap <Leader>l :LLPStartPreview
 "------------------------------------
 
-" ALE-------------------------------------
+" ALE LINTING LINTERS (USED) FIXING FIXERS (USED) COMPLETION (NOT USED)-------------------------------------
+
 " only run linters after saving file
 let g:ale_lint_on_text_changed = 'never'
+
 " also don't run when opening file
 let g:ale_lint_on_enter = 0
 
-let g:ale_fixers = {'python':['yapf'], 'javascript':['eslint', 'prettier']}
+" Only run linters named in ale_linters settings.
+let g:ale_linters_explicit = 1
+
 nnoremap <Leader>fix :ALEFix<CR>
-let b:ale_fixers = {'javascript': ['eslint', 'prettier'], 'python':['yapf']}
 " ----------------------------------------
-" COC AUTOCOMPLETE COMPLETION
+" COC AUTOCOMPLETE COMPLETION COC-SETTINGS
 inoremap <expr> <A-j> pumvisible() ? "\<C-n>" : "\<A-j>"
 inoremap <expr> <A-k> pumvisible() ? "\<C-p>" : "\<A-k>"
 
@@ -432,9 +443,18 @@ inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<T
 
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
+let g:coc_user_config = {
+  \ "diagnostic.errorSign": '⚠',
+  \ "diagnostic.warningSign": '⚐',
+  \ "diagnostic.infoSign": '⚐',
+  \ "diagnostic.hintSign": '⚐',
+  \ "diagnostic.signOffset": 9999,
+  \ "coc.preferences.enableFloatHighlight": v:false,
+  \ "clangd.disableDiagnostics": 0,
+  \ }
+
 " Use K to show documentation in preview window
 "nnoremap <silent> K :call <SID>show_documentation()<CR>
-
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -442,6 +462,32 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
+
+" Use <Leader>o to switch between headers and implementation
+fun! s:switchBetweenHeaderAndImplementation()
+  if match(expand('%'), '\.\(c\|cc\|cpp\)$') > 0
+    let target = 'header'
+    let search_pattern = substitute(expand('%:t'), '\.c\(.*\)$', '.h*', '')
+  elseif match(expand('%'), '\.\(h\|hpp\)$') > 0
+    let target = 'implementation'
+    let search_pattern = substitute(expand('%:t'), '\.h\(.*\)$', '.c*', '')
+  else
+    echo 'Failed to switch to header or implementation for this file'
+    retu
+  endif
+  let dir_name = fnamemodify(expand('%:p'), ':h')
+  let cmd = 'find ' . dir_name .  ' . -type f ' .
+        \ '-iname ' . search_pattern . ' -print -quit'
+  let file_name = substitute(system(cmd), '\n$', '', '')
+  if filereadable(file_name)
+    exe 'e ' file_name
+  else
+    echo 'No ' . target . ' file found for ' . expand('%:t')
+  endif
+endf
+nnoremap <silent> <leader>o :call <SID>switchBetweenHeaderAndImplementation()<CR>
+
+
 " --------------------------------------
 
 " -------------------------------------------------
@@ -461,8 +507,13 @@ onoremap io iw
 onoremap ao aw
 
 " DELIMITMATE STUFF
-" DOESNT WORK FOR SOMEW REASON
+" DOESNT WORK FOR SOME REASON
 "let g:delimitMate_expand_cr = 1
+let delimitMate_matchpairs = "(:),[:],{:},<:>"
+set matchpairs+=<:>
+" below: TODO: adapt this aucommand into the ftplugin files for filetype specific
+" matchpairs
+" au FileType vim,html let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
 
 " PYTHON JUPYTER JUPYTER-VIM -------------------------------------------------
 let g:jupyter_mapkeys = 0
@@ -585,7 +636,7 @@ let wiki_1_ext = '.md'
 let g:vimwiki_list = [wiki_1]
 let g:vimwiki_ext2syntax = {'.md': 'markdown'}
 
-" PLATFORM/OS SPECIFIC:
+" PLATFORM / OS /OPERATING SYSTEM SPECIFIC:
 " WINDOWS ONLY
 if(has('win32'))
     " On windows I use Neovim-qt, and the default path in vim is wherever you
@@ -593,12 +644,19 @@ if(has('win32'))
     " the program in windows using a desktop shortcut
     cd ~
     " reminder: to move nerdtree to CWD, use CD in nerdtree window
+
+    " Extremely specific command to copy the filetype specific script folder to
+    " the runtimepath location that it is looking for the folder in on windows.
+    " also, copy the coc-settings file, if one exists
+    " (hardcoded)
+    silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin"
+    " silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim C:\\Users\\Kaelan\\AppData\\Local\\nvim coc-settings.json"
+    " command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
+
+    " Necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
+    autocmd! VimEnter * GuiPopupmenu 0
 endif
 
-" Extremely specific command to copy the filetype specific script folder to
-" the runtimepath location that it is looking for the folder in on windows.
-" (hardcoded)
-command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
 
 "------------------------------------------------
 " INDENTATION

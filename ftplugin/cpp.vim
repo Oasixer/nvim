@@ -1,2 +1,4 @@
 setlocal ts=2 sw=2 expandtab smartindent
-echo "test"
+
+let b:ale_fixers = ['']
+let b:ale_linters = ['']
