@@ -34,6 +34,6 @@ let b:ale_linters = ['']
 " s is for swap :)
 " These keybinds are designed to match those of NerdTree for the sake of
 " muscle memory. So Enter is cur window, i is hsplit, s is vsplit
-nnoremap <silent> <buffer> <leader>s<CR> :FSHere<cr>
-nnoremap <silent> <buffer> <leader>si :FSSplitAbove<cr>
-nnoremap <silent> <buffer> <leader>ss :FSSplitLeft<cr>
+nnoremap <silent><buffer> <leader>s<CR> :FSHere<cr>
+nnoremap <silent><buffer> <leader>si :FSSplitAbove<cr>
+nnoremap <silent><buffer> <leader>ss :FSSplitLeft<cr>

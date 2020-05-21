@@ -439,13 +439,29 @@ let g:ale_linters_explicit = 1
 nnoremap <Leader>fix :ALEFix<CR>
 " ----------------------------------------
 " COC AUTOCOMPLETE COMPLETION COC-SETTINGS
+
+" Language servers (install using, for example, :CocInstall coc-css)
+" coc-snippets
+" coc-css
+" coc-html
+" coc-java
+" coc-python
+" coc-word
+" coc-svelte
+
+" Map alt j and alt k to up and down in the autocomplete popup (if the
+" autocomplete popup is open), otherwise just leave them the same
 inoremap <expr> <A-j> pumvisible() ? "\<C-n>" : "\<A-j>"
 inoremap <expr> <A-k> pumvisible() ? "\<C-p>" : "\<A-k>"
 
+" Map tab to confirm the selected completion if the autocomplete menu is open,
+" otherwise just leave it as tab
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<Tab>"
 
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
+" Note: you can use a seperate config file for CoC, but I was having MEGA bugs
+" with that
 let g:coc_user_config = {
   \ "diagnostic.errorSign": '⚠',
   \ "diagnostic.warningSign": '⚐',
@@ -455,6 +471,7 @@ let g:coc_user_config = {
   \ "coc.preferences.enableFloatHighlight": v:false,
   \ "clangd.disableDiagnostics": 0,
   \ }
+" Note: disableDiagnostics disables linting for that language server
 
 " Use K to show documentation in preview window
 "nnoremap <silent> K :call <SID>show_documentation()<CR>
