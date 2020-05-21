@@ -47,6 +47,9 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "Plug 'jackguo380/vim-lsp-cxx-highlight'
 
+"Switch between header and implementation for cpp/c
+Plug 'derekwyatt/vim-fswitch' 
+
 Plug 'davidhalter/jedi-vim'
 
 "bunch of snippets
@@ -463,29 +466,6 @@ function! s:show_documentation()
   endif
 endfunction
 
-" Use <Leader>o to switch between headers and implementation
-fun! s:switchBetweenHeaderAndImplementation()
-  if match(expand('%'), '\.\(c\|cc\|cpp\)$') > 0
-    let target = 'header'
-    let search_pattern = substitute(expand('%:t'), '\.c\(.*\)$', '.h*', '')
-  elseif match(expand('%'), '\.\(h\|hpp\)$') > 0
-    let target = 'implementation'
-    let search_pattern = substitute(expand('%:t'), '\.h\(.*\)$', '.c*', '')
-  else
-    echo 'Failed to switch to header or implementation for this file'
-    retu
-  endif
-  let dir_name = fnamemodify(expand('%:p'), ':h')
-  let cmd = 'find ' . dir_name .  ' . -type f ' .
-        \ '-iname ' . search_pattern . ' -print -quit'
-  let file_name = substitute(system(cmd), '\n$', '', '')
-  if filereadable(file_name)
-    exe 'e ' file_name
-  else
-    echo 'No ' . target . ' file found for ' . expand('%:t')
-  endif
-endf
-nnoremap <silent> <leader>o :call <SID>switchBetweenHeaderAndImplementation()<CR>
 
 
 " --------------------------------------
@@ -645,10 +625,10 @@ if(has('win32'))
     cd ~
     " reminder: to move nerdtree to CWD, use CD in nerdtree window
 
-    " Extremely specific command to copy the filetype specific script folder to
+    " Extremely specific command to copy the filetype specific (ftplugin, equiv to after\ftplugin) script folder to
     " the runtimepath location that it is looking for the folder in on windows.
     " also, copy the coc-settings file, if one exists
-    " (hardcoded)
+    " (super duper hardcoded for my current windows machine)
     silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin"
     " silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim C:\\Users\\Kaelan\\AppData\\Local\\nvim coc-settings.json"
     " command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
