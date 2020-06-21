@@ -42,21 +42,15 @@ Plug 'https://tpope.io/vim/repeat.git'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " to install language servers after installing release branch (above), just
 " use CocInstall coc-css, CocInstall coc-python, etc.
-
-" build from source code (possibly needed @ CIBC for some reason? firewall?)
-" Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
-"Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
-" Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-" Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
-" Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
-" Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
+" FOR LIST OF THE COC LANGUAGESERVERS I USE, SEE COC SECTION WAY BELOW
 
 "Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 "Switch between header and implementation for cpp/c
 Plug 'derekwyatt/vim-fswitch' 
 
-Plug 'davidhalter/jedi-vim'
+" Plug 'davidhalter/jedi-vim'
+" nevermind lets just use coc-python instead
 
 "bunch of snippets
 Plug 'honza/vim-snippets'
@@ -84,7 +78,8 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'jeetsukumaran/vim-indentwise'
 
 "syntax linter
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
+" actually screw it lets just use ALE for this too
 
 "latex preview
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
@@ -431,20 +426,20 @@ map <Leader>nt :NERDTree %:p:h<CR>
 "nnoremap <Leader>l :LLPStartPreview
 "------------------------------------
 
-" ALE LINTING LINTERS (USED) FIXING FIXERS (USED) COMPLETION (NOT USED)-------------------------------------
+" ALE LINTING LINTERS (NOT USED) FIXING FIXERS (NOT USED) COMPLETION (NOT USED)-------------------------------------
 
 " only run linters after saving file
-let g:ale_lint_on_text_changed = 'never'
+" let g:ale_lint_on_text_changed = 'never'
 
 " also don't run when opening file
-let g:ale_lint_on_enter = 0
+" let g:ale_lint_on_enter = 0
 
 " Only run linters named in ale_linters settings.
-let g:ale_linters_explicit = 1
+" let g:ale_linters_explicit = 1
 
-nnoremap <Leader>fix :ALEFix<CR>
+" nnoremap <Leader>fix :ALEFix<CR>
 " ----------------------------------------
-" COC AUTOCOMPLETE COMPLETION COC-SETTINGS
+" COC AUTOCOMPLETE COMPLETION COC-SETTINGS LANGUAGESERVERS
 
 " Language servers (install using, for example, :CocInstall coc-css)
 " coc-snippets
@@ -454,6 +449,8 @@ nnoremap <Leader>fix :ALEFix<CR>
 " coc-python
 " coc-word
 " coc-svelte
+" coc-clangd
+" coc-json
 
 " Map alt j and alt k to up and down in the autocomplete popup (if the
 " autocomplete popup is open), otherwise just leave them the same
@@ -468,6 +465,7 @@ autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Note: you can use a seperate config file for CoC, but I was having MEGA bugs
 " with that
+" COC-SETTINGS
 let g:coc_user_config = {
   \ "diagnostic.errorSign": '⚠',
   \ "diagnostic.warningSign": '⚐',
@@ -476,11 +474,18 @@ let g:coc_user_config = {
   \ "diagnostic.signOffset": 9999,
   \ "coc.preferences.enableFloatHighlight": v:false,
   \ "clangd.disableDiagnostics": 0,
+  \ "python.linting.flake8Enabled": 1,
+  \ "python.linting.flake8Args": ["--disable=F401"],
+  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103"],
+  \ "python.linting.pylintUseMinimalCheckers": 1,
+  \ "python.formatting.provider": "yapf",
+  \ "python.formatting.yapfArgs": ["--style={ based_on_style: yapf, indent_width: 4, column_limit: 79 }"],
+  \ "python.analysis.disabled": ["import-error"],
   \ }
 " Note: disableDiagnostics disables linting for that language server
 
-" Use K to show documentation in preview window
-"nnoremap <silent> K :call <SID>show_documentation()<CR>
+" Use gD to show documentation in preview window
+nnoremap <silent> gD :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -489,8 +494,31 @@ function! s:show_documentation()
   endif
 endfunction
 
+" GoTo code navigation (COC)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
 
+nmap <silent> ep <Plug>(coc-diagnostic-prev)
+nmap <silent> en <Plug>(coc-diagnostic-next)
 " --------------------------------------
 
 " -------------------------------------------------
@@ -525,17 +553,10 @@ let g:jupyter_mapkeys = 0
 nnoremap <buffer> <silent> <Leader>X :JupyterSendCell<CR>
 
 " JEDI AUTOCOMPLETE COMPLETION FUNCTIONS DOCS--------
-let g:jedi#completions_enabled = 0
-let g:jedi#show_call_signatures = 1
-let g:jedi#auto_vim_configuration = 0
-" Some useful default keybinds: 
-" <Leader>d goto definition
+" let g:jedi#completions_enabled = 0
+" let g:jedi#show_call_signatures = 1
+" let g:jedi#auto_vim_configuration = 0
 
-"augroup python
-    "autocmd!
-    "autocmd FileType python setlocal 
-"augroup END
-"
 " NERDCOMMENTER COMMENTING COMMENTS
 " ---------------------------------------------------------------------------
 " Add spaces after comment delimiters by default
