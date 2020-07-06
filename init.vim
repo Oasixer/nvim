@@ -132,6 +132,9 @@ set shortmess+=c
 
 " always show signcolumns
 set signcolumn=yes
+
+" keep cursor from reaching bottom/top of screen (show context)
+set scrolloff=5
 "----------------------------------------------------------------------
 colorscheme onedark
 
@@ -359,23 +362,36 @@ nnoremap <Leader>r :reg<CR>
 "Yanking and putting to and from clipboard
 nnoremap <Leader>y "+y
 vnoremap <Leader>y "+y
-nnoremap <Leader>Y "+Y
-nnoremap <Leader>p "*p
-vnoremap <Leader>p "*p
-nnoremap <Leader>]p "*]p
-nnoremap <Leader>[p "*[p
-vnoremap <Leader>]p "*]p
-vnoremap <Leader>[p "*[p
-nnoremap <Leader>]P "*]P
-nnoremap <Leader>[P "*[P
-vnoremap <Leader>]P "*]P
-vnoremap <Leader>[P "*[P
-" inoremap <Leader>p <Esc>"*p
-" inoremap <Leader>]p <Esc>"*]p
-nnoremap <Leader>P "*P
-nnoremap <Leader>]P "*]P
-" inoremap <Leader>P <Esc>"*P
-" inoremap <Leader>]P <Esc>"*]P
+nmap <Leader>Y "+Y
+nnoremap <Leader>p "+p
+vnoremap <Leader>p "+p
+nnoremap <Leader>]p "+]p
+nnoremap <Leader>[p "+[p
+vnoremap <Leader>]p "+]p
+vnoremap <Leader>[p "+[p
+nnoremap <Leader>]P "+]P
+nnoremap <Leader>[P "+[P
+vnoremap <Leader>]P "+]P
+vnoremap <Leader>[P "+[P
+nnoremap <Leader>P "+P
+nnoremap <Leader>]P "+]P
+
+" Yanking and putting to and from the text selection register
+nnoremap <Leader><A-y> "*y 
+vnoremap <Leader><A-y> "*y
+nmap <Leader><A-Y> "*Y
+nnoremap <Leader><A-p> "*p
+vnoremap <Leader><A-p> "*p
+nnoremap <Leader>]<A-p> "*]p
+nnoremap <Leader>[<A-p> "*[p
+vnoremap <Leader>]<A-p> "*]p
+vnoremap <Leader>[<A-p> "*[p
+nnoremap <Leader>]<A-P> "*]P
+nnoremap <Leader>[<A-P> "*[P
+vnoremap <Leader>]<A-P> "*]P
+vnoremap <Leader>[<A-P> "*[P
+nnoremap <Leader><A-P> "*P
+nnoremap <Leader>]<A-P> "*]P
 
 " Shortcut for using z reg
 nnoremap z "z
@@ -391,6 +407,10 @@ nnoremap <Leader>cd :cd %:p:h<CR>
 
 "change cwd to directory of current buffer, for cur window
 nnoremap <Leader>lcd :lcd %:p:h<CR>
+
+"copy absolute path of current buffer to clipboard
+" Cwd stands for copy working directory
+nnoremap <Leader>cwd :let @+=expand("%:p:h")<CR>
 
 command! Vinit vsplit ~/.config/nvim/init.vim
 command! Init e ~/.config/nvim/init.vim
@@ -460,6 +480,9 @@ inoremap <expr> <A-k> pumvisible() ? "\<C-p>" : "\<A-k>"
 " Map tab to confirm the selected completion if the autocomplete menu is open,
 " otherwise just leave it as tab
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<Tab>"
+
+" Map Alt+l to confirm the selected completion if the autocomplete menu is open,
+inoremap <silent><expr> <A-l> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<A-l>"
 
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
