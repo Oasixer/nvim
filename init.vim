@@ -1,8 +1,16 @@
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  " silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  " autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" endif
+let autoload_plug_path = stdpath('config') . '/autoload/plug.vim'
+if !filereadable(autoload_plug_path)
+    exe '!curl -fL --create-dirs -o ' . autoload_plug_path . 
+        \ ' https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+    echo filereadable(autoload_plug_path)
+    execute 'source ' . fnameescape(autoload_plug_path)
+    let plug_install = 1
 endif
+unlet autoload_plug_path
 
 call plug#begin('~/.config/nvim/plugged') "PLUGINS ----------------------------------
 Plug 'joshdick/onedark.vim'
@@ -94,6 +102,7 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 Plug 'vimwiki/vimwiki'
 
 call plug#end() 
+
 " ------------------------------------------------------------
 
 
@@ -672,7 +681,7 @@ nnoremap <expr> yso <SID>Surround()
 
 " Extremely specific command to fix ALE on my windows PC b/c ALE always failes
 " to create the temp folder that it needs
-command! -nargs=1 ALEDir !C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe -c "mkdir -p ~/AppData/Local/Temp/1/nvim<args>"
+" command! -nargs=1 ALEDir !C:\Users\MoffettS\AppData\Local\Programs\Git\bin\bash.exe -c "mkdir -p ~/AppData/Local/Temp/1/nvim<args>"
 
 
 function! LightlineFilename()
