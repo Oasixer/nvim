@@ -5,5 +5,5 @@ nnoremap <buffer> <Leader>fs mu:s/\(\W\)\(['"]\)/\1f\2<CR>:noh<CR>`ul
 
 setlocal ts=4 sw=4 expandtab smartindent
 
-
 let b:ale_fixers = ['yapf']
+

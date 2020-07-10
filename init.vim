@@ -408,9 +408,8 @@ nnoremap <Leader>cd :cd %:p:h<CR>
 "change cwd to directory of current buffer, for cur window
 nnoremap <Leader>lcd :lcd %:p:h<CR>
 
-"copy absolute path of current buffer to clipboard
-" Cwd stands for copy working directory
-nnoremap <Leader>cwd :let @+=expand("%:p:h")<CR>
+"yank absolute path of current buffer to clipboard
+nnoremap <Leader>yd :let @+=expand("%:p:h")<CR>
 
 command! Vinit vsplit ~/.config/nvim/init.vim
 command! Init e ~/.config/nvim/init.vim
@@ -459,7 +458,7 @@ map <Leader>nt :NERDTree %:p:h<CR>
 
 " nnoremap <Leader>fix :ALEFix<CR>
 " ----------------------------------------
-" COC AUTOCOMPLETE COMPLETION COC-SETTINGS LANGUAGESERVERS
+" COC AUTOCOMPLETE COMPLETION COC-SETTINGS LANGUAGESERVERS COC SETTINGS
 
 " Language servers (install using, for example, :CocInstall coc-css)
 " coc-snippets
@@ -497,6 +496,7 @@ let g:coc_user_config = {
   \ "diagnostic.signOffset": 9999,
   \ "coc.preferences.enableFloatHighlight": v:false,
   \ "clangd.disableDiagnostics": 0,
+  \ "python.analysis.diagnosticEnabled": 1,
   \ "python.linting.flake8Enabled": 1,
   \ "python.linting.flake8Args": ["--disable=F401"],
   \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103"],
@@ -533,11 +533,20 @@ nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
+function! CustomCOCPythonFormatting()
+    call CocAction('runCommand', 'editor.action.organizeImport')
+    call CocAction('format')
+endfunction
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Pyformat :call CustomCOCPythonFormatting()
+
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
 
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+" Add `:SI` command for sort/organize imports of the current buffer.
+" PYTHON SORT IMPORTS
+command! -nargs=0 SI :call CocAction('runCommand', 'editor.action.organizeImport')
 
 
 nmap <silent> ep <Plug>(coc-diagnostic-prev)
