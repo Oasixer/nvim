@@ -234,20 +234,36 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
-"Use `ALT+{H,J,K,L}` to move windows (in SPLITS) from any mode:
-tnoremap <A-H> <C-\><C-N><C-w>H
-tnoremap <A-J> <C-\><C-N><C-w>J
-tnoremap <A-K> <C-\><C-N><C-w>K
-tnoremap <A-L> <C-\><C-N><C-w>L
-inoremap <A-H> <C-\><C-N><C-w>H
-inoremap <A-J> <C-\><C-N><C-w>J
-inoremap <A-K> <C-\><C-N><C-w>K
-inoremap <A-L> <C-\><C-N><C-w>L
+function! IsNerdTreeEnabled()
+    return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfunction
 
-nnoremap <A-H> <C-w>H
-nnoremap <A-J> <C-w>J
-nnoremap <A-K> <C-w>K
-nnoremap <A-L> <C-w>L
+function! MoveWindow(...)
+    let wasOpen = 0
+    if IsNerdTreeEnabled()
+        let wasOpen = 1
+        exe "NERDTreeClose"
+    endif
+    exe "wincmd " . a:1
+    if wasOpen == 1
+        exe "NERDTreeToggle"
+        exe "wincmd p"
+    endif
+endfunction
+
+"Use `ALT+{H,J,K,L}` to move windows (in SPLITS) from any mode:
+nnoremap <A-J> :call MoveWindow("J")<CR>
+nnoremap <A-K> :call MoveWindow("K")<CR>
+nnoremap <A-L> :call MoveWindow("L")<CR>
+nnoremap <A-H> :call MoveWindow("H")<CR>
+tnoremap <A-J> <C-\><C-N>:call MoveWindow("J")<CR>
+tnoremap <A-K> <C-\><C-N>:call MoveWindow("K")<CR>
+tnoremap <A-L> <C-\><C-N>:call MoveWindow("L")<CR>
+tnoremap <A-H> <C-\><C-N>:call MoveWindow("H")<CR>
+inoremap <A-J> <C-\><C-N>:call MoveWindow("J")<CR>
+inoremap <A-K> <C-\><C-N>:call MoveWindow("K")<CR>
+inoremap <A-L> <C-\><C-N>:call MoveWindow("L")<CR>
+inoremap <A-H> <C-\><C-N>:call MoveWindow("H")<CR>
 
 "Use `ALT+{-, =, _, +}` to vertically resize windows from any mode: >
 "Use `ALT+{n, m, N, M}` to horizontally resize windows from any mode: >
@@ -410,7 +426,6 @@ vnoremap z "z
 nnoremap _ "_
 vnoremap _ "_
 " -----------------------------------------------------------------------------
-
 "change cwd to directory of current buffer, for all windows
 nnoremap <Leader>cd :cd %:p:h<CR>
 
@@ -442,6 +457,7 @@ let NERDTreeShowHidden=1
 " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 let NERDTreeShowLineNumbers=0
+
 "nerd tree toggle
 noremap <C-n> :NERDTreeToggle<CR>
 
@@ -492,6 +508,9 @@ inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<T
 " Map Alt+l to confirm the selected completion if the autocomplete menu is open,
 inoremap <silent><expr> <A-l> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<A-l>"
 
+" Coc Restart
+command! CRL CocRestart
+
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Note: you can use a seperate config file for CoC, but I was having MEGA bugs
@@ -509,7 +528,7 @@ let g:coc_user_config = {
   \ "python.linting.flake8Enabled": 1,
   \ "python.linting.flake8Args": ["--disable=F401", "--append-config='${workspaceFolder}/.flake8'"],
   \ "coc.preferences.rootPatterns": [".git", ".vim", ".vscode"],
-  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103"],
+  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401"],
   \ "python.linting.pylintUseMinimalCheckers": 1,
   \ "python.formatting.provider": "yapf",
   \ "python.formatting.yapfArgs": ["--style={ based_on_style: yapf, indent_width: 4, column_limit: 79 }"],
@@ -634,6 +653,17 @@ augroup numbertoggle
 	autocmd BufEnter,FocusGained,InsertLeave * call NoRelNumIfNerdTree()
 	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
 augroup END
+
+" Override g; so that if we are already at the most recent edit, we hit g;
+" again. to go to the actual last edit that wasn't where we currently are
+map <silent> g; :call OverrideGotoLastEdit()<CR>
+function! OverrideGotoLastEdit()
+    let line_orig = line(".")
+    normal! g;
+    if line(".") == line_orig
+        normal! g;
+    endif
+endfunction
 
 " Super useful function that swaps the position of the last two windows
 " well technically it swaps the buffers contained in the last two windows
