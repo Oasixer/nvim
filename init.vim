@@ -101,6 +101,9 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 " Vimwiki (links between pages and shit for note taking)
 Plug 'vimwiki/vimwiki'
 
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+
 call plug#end() 
 
 " ------------------------------------------------------------
@@ -205,19 +208,34 @@ if (empty($TMUX))
   endif
 endif
 
+" Distinguish <C-i> from <Tab>
+" doesnt seem to work for termite, so im disabling this for now
+" let &t_TI = "\<Esc>[>4;2m"
+" let &t_TE = "\<Esc>[>4;m"
+
 "--------------------------------------------------------------------
 
 " VANILLA BINDINGS --------------------------------------
-
 "bind redo to U ( tags: UNDO, REDO)
 nnoremap U <C-r>
 
-"To simulate |i_CTRL-R| in terminal-mode: >
-tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+" Insert mode related (mostly defaults) --------------------------
+inoremap <C-b> <C-o>0
+inoremap <C-e> <C-o>$
 
-" Switch to a recent buffer and list the recent buffers
-nnoremap <Leader>b<space> :ls<CR>:b<space>
-nnoremap <Leader>b :ls<CR>:b<space>
+" FOLD RELATED (Mostly defaults) ------------------
+" Defaults
+" zr: reduces fold level throughout the buffer
+" zR: opens all folds
+" zm: increases fold level throughout the buffer
+" zM: folds everything all the way
+" za: open a fold your cursor is on
+" zA: open a fold your cursor is on recursively
+" zc: close a fold your cursor is on
+" zC: close a fold your cursor is on recursively
+
+" Close all folds except the current one
+nno <leader>zv mazMzv`a
 
 " WINDOW / WINDOWS MANAGEMENT/MOVEMENT STUFF ----------------
 "Use `ALT+{h,j,k,l}` to navigate windows from any mode: >
@@ -233,10 +251,6 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
-
-function! IsNerdTreeEnabled()
-    return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
-endfunction
 
 function! MoveWindow(...)
     let wasOpen = 0
@@ -292,6 +306,50 @@ nnoremap <A-N> 8<C-w>>
 nnoremap <A-c> :close<CR>
 cnoremap <A-c> <C-u>close<CR>
 tnoremap <A-c> :close<CR>
+
+"To simulate |i_CTRL-R| in terminal-mode: >
+tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+
+" Switch to a recent buffer and list the recent buffers
+nnoremap <Leader>b<space> :ls<CR>:b<space>
+nnoremap <Leader>b :ls<CR>:b<space>
+
+" COMMAND LINE STUFF CNOREMAP ETC -----------------------------------------
+" defaults:
+" <Esc>        abandon command-line without executing it
+" CTRL-C       abandon command-line without executing it
+
+" CTRL-B       cursor to begin of command-line
+" CTRL-E       cursor to end   of command-line
+
+" CTRL-F       opens the command-line window (unless a different key is specified in 'cedit')
+
+" CTRL-H       delete the character  in front of the cursor (same as <Backspace>)
+" CTRL-W       delete the word       in front of the cursor
+" CTRL-U       delete all characters in front of the cursor
+
+" CTRL-P       recall previous command-line from history (that matches pattern in front of the cursor)
+" CTRL-N       recall next     command-line from history (that matches pattern in front of the cursor)
+" <Up>         recall previous command-line from history (that matches pattern in front of the cursor)
+" <Down>       recall next     command-line from history (that matches pattern in front of the cursor)
+" <S-Up>       recall previous command-line from history
+" <S-Down>     recall next     command-line from history
+" <PageUp>     recall previous command-line from history
+" <PageDown>   recall next     command-line from history
+
+" <S-Left>     cursor one word left
+" <C-Left>     cursor one word left
+" <S-Right>    cursor one word right
+" <C-Right>    cursor one word right
+cnoremap <C-h> <S-Left>
+cnoremap <C-l> <S-Right>
+
+" Use alt h/j/k/l for :command autocomplete AUTOCOMPLETE
+cnoremap <A-j> <C-n>
+cnoremap <A-k> <C-p>
+cnoremap <A-l> <space><backspace>
+cnoremap <A-h> <C-w>
+
 " --------------------------------------------
 " TAB MANAGEMENT STUFF
 
@@ -324,13 +382,6 @@ nnoremap <silent> <Leader>) :tabm<CR>
 "------------------------------------------------------------
 " Make esc hide highlights
 nnoremap <silent> <Esc> :noh<CR>
-
-" Use alt h/j/k/l for :command autocomplete
-cnoremap <A-j> <C-n>
-cnoremap <A-k> <C-p>
-cnoremap <A-l> <space><backspace>
-cnoremap <A-h> <C-w>
-
 
 " YANK, PASTE, DELETE, PUT, PRINT RELATED ---------------------------------------------
  
@@ -419,8 +470,8 @@ nnoremap <Leader><A-P> "*P
 nnoremap <Leader>]<A-P> "*]P
 
 " Shortcut for using z reg
-nnoremap z "z
-vnoremap z "z
+nnoremap <Leader>z "z
+vnoremap <Leader>z "z
 
 " Shortform for blackhole register _
 nnoremap _ "_
@@ -448,7 +499,11 @@ command! RL source ~/.config/nvim/init.vim
 
 " NERDTREE ------------------------------------------
 "open nerdtree on vim startup
-"autocmd vimenter call LaunchNerdtreeIfNotDisabled()
+" autocmd vimenter call LaunchNerdtreeIfNotDisabled()
+
+function! IsNerdTreeEnabled()
+    return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfunction
 
 "show hidden files by default
 let NERDTreeShowHidden=1
@@ -463,6 +518,30 @@ noremap <C-n> :NERDTreeToggle<CR>
 
 " open Nerd Tree in folder of file in active buffer
 map <Leader>nt :NERDTree %:p:h<CR>
+
+function! IsNerdTreeCurrentBuffer()
+    return (expand('%') =~ 'NERD_Tree')
+endfunction
+
+function! GotoBookmarks()
+    if IsNerdTreeEnabled()
+        if IsNerdTreeCurrentBuffer() == 0
+            norm 15h 
+        endif
+    else
+        exe "NERDTreeToggle"
+    endif
+    if getline(3) =~ "----------Bookmarks----------"
+        norm 3G
+    else
+        norm B
+    endif
+
+    " norm B
+endfunction
+
+nnoremap B :call GotoBookmarks()<CR>
+
 " --------------------------------------------------
 
 " LATEX PREVIEW / LLP-------------------
@@ -658,6 +737,10 @@ augroup END
 " again. to go to the actual last edit that wasn't where we currently are
 map <silent> g; :call OverrideGotoLastEdit()<CR>
 function! OverrideGotoLastEdit()
+    if IsNerdTreeCurrentBuffer()
+        echom "Warning: Currently in NERDTree"
+        return
+    endif
     let line_orig = line(".")
     normal! g;
     if line(".") == line_orig
@@ -728,9 +811,13 @@ endfunction
 let wiki_1 = {}
 let wiki_1.path = '~/Documents/notes/'
 let wiki_1_syntax = 'markdown'
-let wiki_1_ext = '.md'
+let wiki_1_ext = '.wiki'
 let g:vimwiki_list = [wiki_1]
-let g:vimwiki_ext2syntax = {'.md': 'markdown'}
+let g:vimwiki_ext2syntax = {'.wiki': 'markdown'}
+
+" VIM-MARKDOWN --------------------------------
+set conceallevel=2
+let g:vim_markdown_fenced_languages = ['bash=sh', 'python', 'css', 'javascript=js', 'vim', 'git']
 
 " PLATFORM / OS /OPERATING SYSTEM SPECIFIC:
 " WINDOWS ONLY
