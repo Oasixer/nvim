@@ -101,6 +101,7 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 " Vimwiki (links between pages and shit for note taking)
 Plug 'vimwiki/vimwiki'
 
+" Markdown
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
@@ -524,11 +525,13 @@ function! IsNerdTreeCurrentBuffer()
 endfunction
 
 function! GotoBookmarks()
+    echo "hi"
     if IsNerdTreeEnabled()
         if IsNerdTreeCurrentBuffer() == 0
             norm 15h 
         endif
     else
+        echo "nerdtree closed"
         exe "NERDTreeToggle"
     endif
     if getline(3) =~ "----------Bookmarks----------"
@@ -540,7 +543,9 @@ function! GotoBookmarks()
     " norm B
 endfunction
 
-nnoremap B :call GotoBookmarks()<CR>
+" Super janky way of defining this mapping but I couldnt get stupid wordmotion
+" to stop overwriting this mapping
+autocmd VimEnter * :nnoremap B :call GotoBookmarks()<CR>
 
 " --------------------------------------------------
 
@@ -738,7 +743,6 @@ augroup END
 map <silent> g; :call OverrideGotoLastEdit()<CR>
 function! OverrideGotoLastEdit()
     if IsNerdTreeCurrentBuffer()
-        echom "Warning: Currently in NERDTree"
         return
     endif
     let line_orig = line(".")
@@ -818,6 +822,7 @@ let g:vimwiki_ext2syntax = {'.wiki': 'markdown'}
 " VIM-MARKDOWN --------------------------------
 set conceallevel=2
 let g:vim_markdown_fenced_languages = ['bash=sh', 'python', 'css', 'javascript=js', 'vim', 'git']
+let g:vim_markdown_folding_disabled = 1
 
 " PLATFORM / OS /OPERATING SYSTEM SPECIFIC:
 " WINDOWS ONLY
@@ -839,7 +844,7 @@ if(has('win32'))
     " Necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
     autocmd! VimEnter * GuiPopupmenu 0
 endif
-
+    
 
 "------------------------------------------------
 " INDENTATION
@@ -858,5 +863,3 @@ set smartindent
 
 filetype plugin on
 
-" Things to remember!
-" o to switch sides of visual selection!!
