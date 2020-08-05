@@ -612,7 +612,7 @@ let g:coc_user_config = {
   \ "python.linting.flake8Enabled": 1,
   \ "python.linting.flake8Args": ["--disable=F401", "--append-config='${workspaceFolder}/.flake8'"],
   \ "coc.preferences.rootPatterns": [".git", ".vim", ".vscode"],
-  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401"],
+  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401", "--load-plugins=pylint-flask"],
   \ "python.linting.pylintUseMinimalCheckers": 1,
   \ "python.formatting.provider": "yapf",
   \ "python.formatting.yapfArgs": ["--style={ based_on_style: yapf, indent_width: 4, column_limit: 79 }"],
@@ -652,7 +652,7 @@ function! CustomCOCPythonFormatting()
 endfunction
 
 " Add `:Format` command to format current buffer.
-command! -nargs=0 Pyformat :call CustomCOCPythonFormatting()
+command! -nargs=0 PyFormat :call CustomCOCPythonFormatting()
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -718,6 +718,11 @@ let g:colorizer_fgcontrast = 0
 " ---------------------------------------------------------------------------------
 " LONG ASS SCRIPTS AND SHIT
 
+" How to make stuff ACTUALLY silent (this is not needed for GUI vim but I only
+" use that in windows, so I need this for linux.
+command! -nargs=1 Silent
+\   execute 'silent!' . <q-args>
+\ | execute 'redraw!'
 
 " LINE NUMBERING RELATED ---------------------------------------
 " Fix relative numbers for nerdtree
@@ -746,9 +751,19 @@ function! OverrideGotoLastEdit()
         return
     endif
     let line_orig = line(".")
-    normal! g;
-    if line(".") == line_orig
+    " execute 'Silent normal! g;'
+    try
         normal! g;
+    catch /E664:/
+      echo "Empty changelist"
+    endtry
+    if line(".") == line_orig
+        " execute 'Silent normal! g;'
+        try
+            normal! g;
+        catch /E664:/
+          echo "Empty changelist"
+        endtry
     endif
 endfunction
 
