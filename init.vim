@@ -347,7 +347,9 @@ cnoremap <C-l> <S-Right>
 
 " Use alt h/j/k/l for :command autocomplete AUTOCOMPLETE
 cnoremap <A-j> <C-n>
+cnoremap <A-j> <Down>
 cnoremap <A-k> <C-p>
+cnoremap <A-k> <Up>
 cnoremap <A-l> <space><backspace>
 cnoremap <A-h> <C-w>
 
@@ -612,7 +614,7 @@ let g:coc_user_config = {
   \ "python.linting.flake8Enabled": 1,
   \ "python.linting.flake8Args": ["--disable=F401", "--append-config='${workspaceFolder}/.flake8'"],
   \ "coc.preferences.rootPatterns": [".git", ".vim", ".vscode"],
-  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401", "--load-plugins=pylint-flask"],
+  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401", "--load-plugins=pylint_flask"],
   \ "python.linting.pylintUseMinimalCheckers": 1,
   \ "python.formatting.provider": "yapf",
   \ "python.formatting.yapfArgs": ["--style={ based_on_style: yapf, indent_width: 4, column_limit: 79 }"],
@@ -664,6 +666,7 @@ command! -nargs=0 SI :call CocAction('runCommand', 'editor.action.organizeImport
 
 nmap <silent> ep <Plug>(coc-diagnostic-prev)
 nmap <silent> en <Plug>(coc-diagnostic-next)
+nmap <silent> ef <Plug>(coc-diagnostic-first)
 " --------------------------------------
 
 " -------------------------------------------------
