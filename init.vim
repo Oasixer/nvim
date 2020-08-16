@@ -492,6 +492,11 @@ command! Init e ~/.config/nvim/init.vim
 command! Tinit tabe ~/.config/nvim/init.vim
 command! Hinit split ~/.config/nvim/init.vim
 
+command! Vnotes vsplit ~/Documents/notes
+command! Notes e ~/Documents/notes
+command! Tnotes tabe ~/Documents/notes
+command! Hnotes split ~/Documents/notes
+
 " RELOAD init.vim 
 command! RL source ~/.config/nvim/init.vim
 "
@@ -821,7 +826,7 @@ let g:vimwiki_ext2syntax = {'.wiki': 'markdown'}
 
 " VIM-MARKDOWN --------------------------------
 set conceallevel=2
-let g:vim_markdown_fenced_languages = ['bash=sh', 'python', 'css', 'javascript=js', 'vim', 'git']
+let g:vim_markdown_fenced_languages = ['bash=sh', 'python', 'css', 'js=javascript', 'vim', 'git']
 let g:vim_markdown_folding_disabled = 1
 
 " PLATFORM / OS /OPERATING SYSTEM SPECIFIC:
