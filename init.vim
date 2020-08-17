@@ -46,19 +46,19 @@ Plug 'tpope/vim-surround'
 " provides additional action repeating features
 Plug 'https://tpope.io/vim/repeat.git'
 
+"syntax linter (Currently using COC for this instead!)
+" Plug 'dense-analysis/ale'
+
 "autocomplete via COC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" to install language servers after installing release branch (above), just
-" use CocInstall coc-css, CocInstall coc-python, etc.
-" FOR LIST OF THE COC LANGUAGESERVERS I USE, SEE COC SECTION WAY BELOW
+" To install language servers after installing release branch (above), just
+" Use CocInstall coc-css, CocInstall coc-python, etc.
+" For list of the coc languageservers i use, see coc section way below
 
 "Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 "Switch between header and implementation for cpp/c
 Plug 'derekwyatt/vim-fswitch' 
-
-" Plug 'davidhalter/jedi-vim'
-" nevermind lets just use coc-python instead
 
 "bunch of snippets
 Plug 'honza/vim-snippets'
@@ -85,10 +85,6 @@ Plug 'michaeljsmith/vim-indent-object'
 " indentation based movement
 Plug 'jeetsukumaran/vim-indentwise'
 
-"syntax linter
-" Plug 'dense-analysis/ale'
-" actually screw it lets just use ALE for this too
-
 "latex preview
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 
@@ -105,6 +101,12 @@ Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
+" User defined textobjs (required for textobj-entire)
+Plug 'kana/vim-textobj-user'
+
+" Entire textobj
+Plug 'kana/vim-textobj-entire'
+
 call plug#end() 
 
 " ------------------------------------------------------------
@@ -113,7 +115,7 @@ call plug#end()
 " SETTINGS/OPTIONS ------------------------------------------------------------
 let mapleader = " "
 syntax on
-syntax enable "ryan
+syntax enable
 
 let g:netrw_keepdir=0
 
@@ -145,6 +147,9 @@ set shortmess+=c
 
 " always show signcolumns
 set signcolumn=yes
+
+" treat a-word as a single word
+set iskeyword+=-
 
 " keep cursor from reaching bottom/top of screen (show context)
 set scrolloff=5
@@ -347,9 +352,9 @@ cnoremap <C-l> <S-Right>
 
 " Use alt h/j/k/l for :command autocomplete AUTOCOMPLETE
 cnoremap <A-j> <C-n>
-cnoremap <A-j> <Down>
+" cnoremap <A-j> <Down>
 cnoremap <A-k> <C-p>
-cnoremap <A-k> <Up>
+" cnoremap <A-k> <Up>
 cnoremap <A-l> <space><backspace>
 cnoremap <A-h> <C-w>
 
@@ -612,15 +617,18 @@ let g:coc_user_config = {
   \ "clangd.disableDiagnostics": 0,
   \ "python.analysis.diagnosticEnabled": 1,
   \ "python.linting.flake8Enabled": 1,
-  \ "python.linting.flake8Args": ["--disable=F401", "--append-config='${workspaceFolder}/.flake8'"],
+  \ "python.linting.flake8Args": ["--ignore=F401"],
   \ "coc.preferences.rootPatterns": [".git", ".vim", ".vscode"],
-  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401", "--load-plugins=pylint_flask"],
+  \ "python.linting.pylintEnabled": 1,
+  \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401"],
   \ "python.linting.pylintUseMinimalCheckers": 1,
   \ "python.formatting.provider": "yapf",
   \ "python.formatting.yapfArgs": ["--style={ based_on_style: yapf, indent_width: 4, column_limit: 79 }"],
   \ "python.analysis.disabled": ["import-error"],
   \ }
 " Note: disableDiagnostics disables linting for that language server
+" \ "python.linting.pylintArgs": ["--max-line-length=79", "--disable=C0103", "--disable=E0401", "--load-plugins", "pylint_flask", "pylint_flask_sqlalchemy"],
+"  "python.linting.flake8Args": ["--disable=F401", "--append-config='${workspaceFolder}/.flake8'"],
 
 " Use gD to show documentation in preview window
 nnoremap <silent> gD :call <SID>show_documentation()<CR>
@@ -653,10 +661,9 @@ function! CustomCOCPythonFormatting()
     call CocAction('format')
 endfunction
 
-" Add `:Format` command to format current buffer.
+" Add `:Format` command to format current buffer. and Pyformat for python
 command! -nargs=0 PyFormat :call CustomCOCPythonFormatting()
-
-" Add `:Format` command to format current buffer.
+command! -nargs=0 Pyformat :call CustomCOCPythonFormatting()
 command! -nargs=0 Format :call CocAction('format')
 
 " Add `:SI` command for sort/organize imports of the current buffer.
@@ -664,9 +671,10 @@ command! -nargs=0 Format :call CocAction('format')
 command! -nargs=0 SI :call CocAction('runCommand', 'editor.action.organizeImport')
 
 
-nmap <silent> ep <Plug>(coc-diagnostic-prev)
-nmap <silent> en <Plug>(coc-diagnostic-next)
-nmap <silent> ef <Plug>(coc-diagnostic-first)
+nmap <silent> <leader>ep <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>en <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>ef <Plug>(coc-diagnostic-first)
+nnoremap <silent> <leader>ed :CocCommand python.enableLinting<CR>
 " --------------------------------------
 
 " -------------------------------------------------
@@ -684,6 +692,13 @@ xnoremap io iw
 xnoremap ao aw
 onoremap io iw
 onoremap ao aw
+
+" TEXTOBJ STUFF VIM-TEXTOBJ ---
+" Note: doesnt seem to be working rn
+xmap ae <Plug>(textobj-entire-a)
+xmap ie <Plug>(textobj-entire-i)
+omap ae <Plug>(textobj-entire-a)
+omap ie <Plug>(textobj-entire-i)
 
 " DELIMITMATE STUFF
 " DOESNT WORK FOR SOME REASON
@@ -758,14 +773,14 @@ function! OverrideGotoLastEdit()
     try
         normal! g;
     catch /E664:/
-      echo "Empty changelist"
+      echom "Empty changelist"
     endtry
     if line(".") == line_orig
         " execute 'Silent normal! g;'
         try
             normal! g;
         catch /E664:/
-          echo "Empty changelist"
+          echom "Empty changelist"
         endtry
     endif
 endfunction
