@@ -107,6 +107,8 @@ Plug 'kana/vim-textobj-user'
 " Entire textobj
 Plug 'kana/vim-textobj-entire'
 
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
 call plug#end() 
 
 " ------------------------------------------------------------
@@ -530,7 +532,7 @@ let NERDTreeShowLineNumbers=0
 noremap <C-n> :NERDTreeToggle<CR>
 
 " open Nerd Tree in folder of file in active buffer
-map <Leader>nt :NERDTree %:p:h<CR>
+map <Leader>ncd :NERDTree %:p:h<CR>
 
 function! IsNerdTreeCurrentBuffer()
     return (expand('%') =~ 'NERD_Tree')

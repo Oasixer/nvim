@@ -22,3 +22,19 @@ function! HtmlCommentToggle()
 endfunction
 
 noremap <Leader>ch :call HtmlCommentToggle()<CR>
+
+command! Clog norm <Esc>oconsole.log("<Esc>pa");<Esc>oconsole.log(<Esc>pa);<Esc>
+iabbrev <buffer> clog console.log('');<Esc>F'
+iabbrev <buffer> clog2 console.log(`: ${}`);<Esc>F:
+iabbrev <buffer> clogp console.log(`: ${}`);<Esc>F:Pf{p$
+iabbrev <buffer> 4clog $: console.log(`: ${}`);<Esc>F:
+iabbrev <buffer> 4clogp $: console.log(`: ${}`);<Esc>F:Pf{p$
+iabbrev <buffer> forEach forEach(function (i) {<CR><CR>});<Esc>k
+iabbrev <buffer> foreach forEach(function (i) {<CR><CR>});<Esc>k
+iabbrev <buffer> forEach2 forEach(function (i, n) {<CR><CR>});<Esc>k
+iabbrev <buffer> foreach2 forEach(function (i, n) {<CR><CR>});<Esc>k
+iabbrev <buffer> onmount import { onMount } from 'svelte';<CR>onMount(async => {<CR>);
+iabbrev <buffer> onMount import { onMount } from 'svelte';<CR>onMount(async => {<CR>});
+iabbrev <buffer> forin for (const property in object) {<CR>console.log(`${property}: ${object[property]}`);<CR>}
+iabbrev <buffer> forin2 for (const property in <Esc>pa) {<CR>console.log(`${property}: ${<Esc>pa[property]}`);<CR>}
+iabbrev <buffer> dispatch import { createEventDispatcher <Right><Right> from 'svelte';<CR>const dispatch = createEventDispatcher();<CR>const dispatchThing = () => {dispatch('thing')};<CR><button on:click={dispatchThing}/
