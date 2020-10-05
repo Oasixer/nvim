@@ -10,7 +10,8 @@ SetNumLockState, AlwaysOff
 ; Remap win+l to alt tab
 
 
-+#s:: Send {LWin down}{Shift Down}s{Shift up}{LWin up}
+#+s:: Send {LWin down}{Shift Down}s{Shift up}{LWin up}
+#r:: Send {LWin down}r{LWin up}
 
 Capslock & lwin::rwin
 Capslock & 1::F1
@@ -26,6 +27,7 @@ Capslock & 0::F10
 Capslock & -::F11
 Capslock & =::F12
 Capslock & Backspace::Delete
++Backspace::Send {Delete}
 +Esc::Send ~
 Capslock & Esc::SendRaw ``
 
