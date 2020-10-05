@@ -539,7 +539,7 @@ function! IsNerdTreeCurrentBuffer()
 endfunction
 
 function! GotoBookmarks()
-    echo "hi"
+    " echo "hi"
     if IsNerdTreeEnabled()
         if IsNerdTreeCurrentBuffer() == 0
             norm 15h 
@@ -560,6 +560,7 @@ endfunction
 " Super janky way of defining this mapping but I couldnt get stupid wordmotion
 " to stop overwriting this mapping
 autocmd VimEnter * :nnoremap B :call GotoBookmarks()<CR>
+nnoremap B :call GotoBookmarks()<CR>
 
 " --------------------------------------------------
 
