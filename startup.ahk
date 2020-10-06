@@ -10,12 +10,6 @@ SetScrollLockState, AlwaysOff
 SetNumLockState, AlwaysOff
 
 
-#r::#r
-#+s::#+s
-#d::#d
-#+1::Send #+{Left}
-#+2::Send #+{Right}
-
 Capslock & 1::F1
 Capslock & 2::F2
 Capslock & 3::F3
@@ -168,24 +162,38 @@ lwin::
     {
         If(GetKeyState("LShift", "P") and GetKeyState("s", "P"))
         {
+            Send #+s
             return
         }
         
-        If(GetKeyState("r", "P"))
+        If(GetKeyState("LShift", "P") and GetKeyState("1", "P"))
         {
+            Send #+{Left}
+            Sleep 15
+        }
+
+        If(GetKeyState("LShift", "P") and GetKeyState("2", "P"))
+        {
+            Send #+{Right}
+            Sleep 15
+        }
+        
+        if(GetKeyState("r", "P"))
+        {
+            Send #r
             return
         }
         
         If(GetKeyState("d", "P"))
         {
+            Send #d
             return
         }
         If(GetKeyState("x", "P"))
         {
+            Send #x
             return
         }
-
-
         If(GetKeyState("h", "P"))
         {
             If !h
@@ -238,4 +246,7 @@ lwin::
     ; Send {Alt up}
     ; Send {LWin up}
 return
+
+#+1::Send #+{Left}
+#+2::Send #+{Right}
 
