@@ -3,17 +3,19 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+
+; Useful shortcuts: http://aalapshah.in/qipress
 SetCapsLockState, AlwaysOff
 SetScrollLockState, AlwaysOff
 SetNumLockState, AlwaysOff
 
-; Remap win+l to alt tab
 
+#r::#r
+#+s::#+s
+#d::#d
+#+1::Send #+{Left}
+#+2::Send #+{Right}
 
-#+s:: Send {LWin down}{Shift Down}s{Shift up}{LWin up}
-#r:: Send {LWin down}r{LWin up}
-
-Capslock & lwin::rwin
 Capslock & 1::F1
 Capslock & 2::F2
 Capslock & 3::F3
@@ -27,24 +29,165 @@ Capslock & 0::F10
 Capslock & -::F11
 Capslock & =::F12
 Capslock & Backspace::Delete
-+Backspace::Send {Delete}
+Rshift & Backspace::Send {Delete}
 +Esc::Send ~
 Capslock & Esc::SendRaw ``
 
-Capslock & j::Send {Down}
-Capslock & h::Send {Left}
-Capslock & k::Send {Up}
-Capslock & l::Send {Right}
+Capslock & h::
+    shift := false
+    alt := false
+    ctrl := false
+    if((GetKeyState("Shift", "P")) && (!shift))
+    {
+        Send {RShift Down}
+        shift := true
+    }
+    if((GetKeyState("Alt", "P")) && !alt)
+    {
+        Send {RAlt Down}
+        alt := true
+    }
+    if(GetKeyState("Control", "P") && !ctrl)
+    {
+        Send {RControl Down}
+        ctrl := true
+    }
+
+    Send {Left}
+
+    if (shift)
+        Send {RShift Up}
+    if (alt)
+        Send {RAlt Up}
+    if (ctrl)
+        Send {RControl Up}
+return
+
+Capslock & j::
+    shift := false
+    alt := false
+    ctrl := false
+    if((GetKeyState("Shift", "P")) && (!shift))
+    {
+        Send {RShift Down}
+        shift := true
+    }
+    if((GetKeyState("Alt", "P")) && !alt)
+    {
+        Send {RAlt Down}
+        alt := true
+    }
+    if(GetKeyState("Control", "P") && !ctrl)
+    {
+        Send {RControl Down}
+        ctrl := true
+    }
+
+    Send {Down}
+
+    if (shift)
+        Send {RShift Up}
+    if (alt)
+        Send {RAlt Up}
+    if (ctrl)
+        Send {RControl Up}
+return
+
+Capslock & k::
+    shift := false
+    alt := false
+    ctrl := false
+    if((GetKeyState("Shift", "P")) && (!shift))
+    {
+        Send {RShift Down}
+        shift := true
+    }
+    if((GetKeyState("Alt", "P")) && !alt)
+    {
+        Send {RAlt Down}
+        alt := true
+    }
+    if(GetKeyState("Control", "P") && !ctrl)
+    {
+        Send {RControl Down}
+        ctrl := true
+    }
+
+    Send {Up}
+
+    if (shift)
+        Send {RShift Up}
+    if (alt)
+        Send {RAlt Up}
+    if (ctrl)
+        Send {RControl Up}
+return
+
+Capslock & l::
+    shift := false
+    alt := false
+    ctrl := false
+    if((GetKeyState("Shift", "P")) && (!shift))
+    {
+        Send {RShift Down}
+        shift := true
+    }
+    if((GetKeyState("Alt", "P")) && !alt)
+    {
+        Send {RAlt Down}
+        alt := true
+    }
+    if(GetKeyState("Control", "P") && !ctrl)
+    {
+        Send {RControl Down}
+        ctrl := true
+    }
+
+    Send {Right}
+
+    if (shift)
+        Send {RShift Up}
+    if (alt)
+        Send {RAlt Up}
+    if (ctrl)
+        Send {RControl Up}
+return
+
 
 lwin::
     h := false
     l := false
+    r := false
+    shift_s := false
     hasPressed := false
     all := ""
     temp := 0
+    time = 0
+    ; Send {LWin Down}
     While(1=1)
     {
-        If(GetKeyState("h", "P")){
+        If(GetKeyState("LShift", "P") and GetKeyState("s", "P"))
+        {
+            return
+        }
+        
+        If(GetKeyState("r", "P"))
+        {
+            return
+        }
+        
+        If(GetKeyState("d", "P"))
+        {
+            return
+        }
+        If(GetKeyState("x", "P"))
+        {
+            return
+        }
+
+
+        If(GetKeyState("h", "P"))
+        {
             If !h
             {
                 If(!GetKeyState("Alt", "P"))
@@ -56,19 +199,18 @@ lwin::
                 h := true
             }
         }
-        else
+        Else
         {
             h := false
         }
+
         If(GetKeyState("l", "P"))
         {
             If(!l)
             {
-                If(!GetKeyState("Alt", "P"))
-                {
-                    Send {Alt Down}
-                }
+                Send {Alt Down}
                 Send {Tab}
+                Send {Alt Up}
                 hasPressed := true
                 l := true
             }
@@ -78,19 +220,22 @@ lwin::
             l := false
         }
 
-        If(!GetKeyState("LWin", "P"))
+        if(!GetKeyState("LWin", "P"))
         {
-            if !hasPressed
+            if(!hasPressed)
             {
-                Send {LWin}
-                break
+                if(time < 300)
+                {
+                    Send {LWin}
+                }
             }
             break
         }
 
-        Sleep 10 ;to make this loop less cpu intensive
+        Sleep 5 ;to make this loop less cpu intensive
+        time := time + 5
     }
-    Send {Alt up}
-    Send {LWin up}
+    ; Send {Alt up}
+    ; Send {LWin up}
 return
 
