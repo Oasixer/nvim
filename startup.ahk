@@ -291,3 +291,24 @@ return
     ; ; Send {Alt up}
     ; ; Send {LWin up}
 ; return
+
+
+; <#F20::Send ^z
+<#F20::MsgBox hi
+
+; #IfWinExist, ahk_class Shell_TrayWnd
+; {
+; #F20::
+    ; SetKeyDelay, 50 ; this is to prevent pressing (mapped) LWin before the physical keystroke of         the pen has been processed
+    ; {send, {LWin}
+    ; return
+    ; }
+; }
+; #IfWinActive, ahk_class Windows.UI.Core.CoreWindow
+; {
+; #F20::
+    ; SetKeyDelay, 50
+    ; {send {Esc}
+    ; return
+    ; }
+; }
