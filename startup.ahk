@@ -19,6 +19,10 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 
+; Syntax that i forget often
+; MsgBox hi
+; ~^1:: ; the ~ symbol causes this hotkey to not block the native function of ~^1 which is blocked by default
+
 
 ; Useful shortcuts: http://aalapshah.in/qipress
 SetCapsLockState, AlwaysOff
@@ -292,9 +296,16 @@ return
     ; ; Send {LWin up}
 ; return
 
+; SURFACE PEN
+; Pressing the eraser button of the Surface Pen sends a hotkey combination of Windows Key + F18/19/20 Function Key, 
+; see mapping as follows
+
+; #F20 = Single Press, 
+; #F19 = Double Press,
+; #F18 = Long Press,
 
 ; <#F20::Send ^z
-<#F20::MsgBox hi
+~<#F20::Send ^z
 
 ; #IfWinExist, ahk_class Shell_TrayWnd
 ; {
