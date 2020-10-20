@@ -5,18 +5,22 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ; disabling bullshit via regedit
 
-; snipping tool:
+; snipping tool -------------------
 ; regedit
 ; Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft
 ; create key TabletPC
 ; new DWORD 32bit called DisableSnippingTool w/ 0x00000001
 
-; lock screen:
+; lock screen ----------------
 ; regedit
 ; Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\windows
 ; create key Personalization
 ; new DWORD 32bit called NoLockScreen w/ 0x00000001
 
+; improve screen polling rate on surface ------------------
+; regedit
+; Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\TouchPrediction
+; reduce Latency and SampleTime, eg. to 2ms
 
 
 ; Syntax that i forget often
@@ -65,6 +69,8 @@ Capslock & 9::F9
 Capslock & 0::F10
 Capslock & -::F11
 Capslock & =::F12
+; screenshot
+; Capslock & s::^!p
 Capslock & Backspace::Delete
 Rshift & Backspace::Send {Delete}
 +Esc::Send ~
@@ -305,7 +311,49 @@ return
 ; #F18 = Long Press,
 
 ; <#F20::Send ^z
+
 ~<#F20::Send ^z
+^a::
+{
+	SetTitleMatchMode, % (Setting_A_TitleMatchMode := A_TitleMatchMode) ? "RegEx" :
+	if WinExist("ahk_class Microsoft-Windows-.*SnipperToolbar")
+	{
+		WinGet, State, MinMax
+		if (State = -1)
+		{	
+			WinRestore
+			Send, ^n
+		}
+		else if WinActive()
+			WinMinimize
+		else
+		{
+			WinActivate
+			Send, ^n
+		}
+	}
+	else if WinExist("ahk_class Microsoft-Windows-.*SnipperEditor")
+	{
+		WinGet, State, MinMax
+		if (State = -1)
+			WinRestore
+		else if WinActive()
+			WinMinimize
+		else
+			WinActivate
+	}
+	else
+	{
+		Run, snippingtool.exe
+		if (SubStr(A_OSVersion,1,2)=10)
+		{
+			WinWait, ahk_class Microsoft-Windows-.*SnipperToolbar,,3
+			Send, ^n
+		}
+	}
+	SetTitleMatchMode, %Setting_A_TitleMatchMode%
+	return
+}
 
 ; #IfWinExist, ahk_class Shell_TrayWnd
 ; {

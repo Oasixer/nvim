@@ -732,9 +732,15 @@ nnoremap <buffer> <silent> <Leader>X :JupyterSendCell<CR>
 " ---------------------------------------------------------------------------
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
+
 " Use compact sexy comments (<space>cs)
 let g:NERDCompactSexyComs = 1
+" /* compact sexy comment example (in c)
+"  * compact sexy comment example (in c) */
 
+" use alt comment by default (use // by default in c)
+let g:NERDAltDelims_c = 1
+let g:NERDAltDelims_cpp = 1
 
 " CSS COLORIZER
 let g:colorizer_fgcontrast = 0
