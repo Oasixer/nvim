@@ -313,7 +313,7 @@ return
 ; <#F20::Send ^z
 
 ~<#F20::Send ^z
-^a::
+~<#F18::
 {
 	SetTitleMatchMode, % (Setting_A_TitleMatchMode := A_TitleMatchMode) ? "RegEx" :
 	if WinExist("ahk_class Microsoft-Windows-.*SnipperToolbar")
@@ -341,6 +341,7 @@ return
 			WinMinimize
 		else
 			WinActivate
+                Send, ^n
 	}
 	else
 	{
@@ -371,3 +372,7 @@ return
     ; return
     ; }
 ; }
+
+
+; Use mouse4 to hold ctrl for swapping screens
+XButton2::LCtrl
