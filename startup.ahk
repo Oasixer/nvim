@@ -312,7 +312,26 @@ return
 
 ; <#F20::Send ^z
 
-~<#F20::Send ^z
+~<#F20::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+
+        MouseGetPos, StartX, StartY
+        Click, 175, 425
+        MouseMove, StartX, StartY
+    }
+return
+
+~<#F19::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+
+        MouseGetPos, StartX, StartY
+        Click, 1500, 200
+        MouseMove, StartX, StartY
+    }
+return
+
 ~<#F18::
 {
 	SetTitleMatchMode, % (Setting_A_TitleMatchMode := A_TitleMatchMode) ? "RegEx" :
