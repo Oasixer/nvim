@@ -389,4 +389,249 @@ return
 return
 
 ; Use mouse4 to hold ctrl for swapping screens
-XButton2::LCtrl
+; XButton2::LCtrl
+
+CapsLock & r::
+    ; reload
+    Run, "C:\Users\%A_Username%\.config\nvim\startup.ahk"
+    ; this lower version doesnt work bc no matter what I try the unicode doesnt work ie AHK launches in ANSI mode
+    ; even if I run AutoHotkey_U32.exe...
+    ; Run, C:\Program Files\AutoHotkey\AutoHotkey.exe "C:\Users\%A_Username%\.config\nvim\startup.ahk"
+    Sleep 300
+    Send {Enter}
+    return
+    
+
+CapsLock & s:: ;symbol insertion!
+    name =
+    winTitle := "Input Symbol"
+    winPrompt := "Input Symbol"
+    width =
+    height =
+    x =
+    y =
+    locale =
+    timeout =
+    InputBox, name, %winTitle%, %winPrompt%, , %width%, %height%, %x%, %y%, %locale%, %timeout%
+    
+    If (name ="ualpha")
+        send Α
+    else If (name ="lalpha")
+        send α
+    else If (name ="ubeta")
+        send Β
+    else If (name ="lbeta")
+        send β
+    else If (name ="ugamma")
+        send Γ
+    else If (name ="lgamma")
+        send γ
+    else If (name ="udelta")
+        send Δ
+    else If (name ="ldelta")
+        send δ
+    else If (name ="uepsilon")
+        send Ε
+    else If (name ="lepsilon")
+        send ε
+    else If (name ="uzeta")
+        send Ζ
+    else If (name ="lzeta")
+        send ζ
+    else If (name ="ueta")
+        send Η
+    else If (name ="leta")
+        send η
+    else If (name ="utheta")
+        send Θ
+    else If (name ="ltheta")
+        send θ
+    else If (name ="uiota")
+        send Ι
+    else If (name ="liota")
+        send ι
+    else If (name ="ukappa")
+        send Κ
+    else If (name ="lkappa")
+        send κ
+    else If (name ="ulambda")
+        send Λ
+    else If (name ="llambda")
+        send λ
+    else If (name ="umu")
+        send Μ
+    else If (name ="lmu")
+        send μ
+    else If (name ="unu")
+        send Ν
+    else If (name ="lnu")
+        send ν
+    else If (name ="uxi")
+        send Ξ
+    else If (name ="lxi")
+        send ξ
+    else If (name ="uomicron")
+        send Ο
+    else If (name ="lomicron")
+        send ο
+    else If (name ="upi")
+        send Π
+    else If (name ="lpi")
+        send π
+    else If (name ="urho")
+        send Ρ
+    else If (name ="lrho")
+        send ρ
+    else If (name ="usigma")
+        send Σ
+    else If (name ="lsigma")
+        send σ
+    else If (name ="utau")
+        send Τ
+    else If (name ="ltau")
+        send τ
+    else If (name ="uupsilon")
+        send Υ
+    else If (name ="lupsilon")
+        send υ
+    else If (name ="uphi")
+        send Φ
+    else If (name ="lphi")
+        send φ
+    else If (name ="uchi")
+        send Χ
+    else If (name ="lchi")
+        send χ
+    else If (name ="upsi")
+        send Ψ
+    else If (name ="lpsi")
+        send ψ
+    else If (name ="uomega")
+        send Ω
+    else If (name ="lomega")
+        send ω
+    else If (name ="backtick")
+        send ``
+    else If (name = "super0")
+        send ⁰
+    else If (name = "sub0")
+        send ₀
+    else If (name = "super1")
+        send ¹
+    else If (name = "sub1")
+        send ₁
+    else If (name = "super2")
+        send ²
+    else If (name = "sub2")
+        send ₂
+    else If (name = "super3")
+        send ³
+    else If (name = "sub3")
+        send ₃
+    else If (name = "super4")
+        send ⁴
+    else If (name = "sub4")
+        send ₄
+    else If (name = "super5")
+        send ⁵
+    else If (name = "sub5")
+        send ₅
+    else If (name = "super6")
+        send ⁶
+    else If (name = "sub6")
+        send ₆
+    else If (name = "super7")
+        send ⁷
+    else If (name = "sub7")
+        send ₇
+    else If (name = "super8")
+        send ⁸
+    else If (name = "sub8")
+        send ₈
+    else If (name = "super9")
+        send ⁹
+    else If (name = "sub9")
+        send ₉
+    else If (name = "suba")
+        send ₐ
+    else If (name = "subi")
+        send ᵢ
+    else If (name = "subj")
+        send ⱼ
+    else If (name = "subk")
+        send ₖ
+    else If (name = "subl")
+        send ₗ
+    else If (name = "subm")
+        send ₘ
+    else If (name = "subn")
+        send ₙ
+    else If (name = "subo")
+        send ₒ
+    else If (name = "subp")
+        send ₚ
+    else If (name = "subs")
+        send ₛ
+    else If (name = "subt")
+        send ₜ
+    else If (name = "subu")
+        send ᵤ
+    else If (name = "subv")
+        send ᵥ
+    else If (name = "supera")
+        send ᵃ
+    else If (name = "superb")
+        send ᵇ
+    else If (name = "superc")
+        send ᶜ
+    else If (name = "superd")
+        send ᵈ
+    else If (name = "supere")
+        send ᵉ
+    else If (name = "superf")
+        send ᶠ
+    else If (name = "superg")
+        send ᵍ
+    else If (name = "superh")
+        send ʰ
+    else If (name = "superi")
+        send ⁱ
+    else If (name = "superj")
+        send ʲ
+    else If (name = "superk")
+        send ᵏ
+    else If (name = "superl")
+        send ˡ
+    else If (name = "superm")
+        send ᵐ
+    else If (name = "supern")
+        send ⁿ
+    else If (name = "supero")
+        send ᵒ
+    else If (name = "superp")
+        send ᵖ
+    else If (name = "superr")
+        send ʳ
+    else If (name = "supers")
+        send ˢ
+    else If (name = "supert")
+        send ᵗ
+    else If (name = "superu")
+        send ᵘ
+    else If (name = "superv")
+        send ᵛ
+    else If (name = "superw")
+        send ʷ
+    else If (name = "superx")
+        send ˣ
+    else If (name = "supery")
+        send ʸ
+    else If (name = "superz")
+        send ᶻ
+    else If (name = "integral")
+        send ∫
+    else If (name = "sqrt")
+        send √(){Left}
+    else
+        MsgBox, 0, ,Unrecognized symbol name!,0.3
+    return
