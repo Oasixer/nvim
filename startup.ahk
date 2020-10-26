@@ -33,6 +33,9 @@ SetCapsLockState, AlwaysOff
 SetScrollLockState, AlwaysOff
 SetNumLockState, AlwaysOff
 
+; more info on options: https://www.autohotkey.com/docs/commands/InputHook.htm
+; Use the option "V" for nonblocking!
+; Use the option "Tx" where x is the timeout in seconds (decimal)
 KeyWaitAny(Options:="")
 {
     ih := InputHook(Options)
@@ -312,17 +315,32 @@ return
 
 ; <#F20::Send ^z
 
-~<#F20::
+f18 := false
+f19 := false
+f20 := false
+
+<#F20::
+    f20 := true
+    if (f18)
+    {
+        return
+    }
     if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
     {
 
         MouseGetPos, StartX, StartY
         Click, 175, 425
         MouseMove, StartX, StartY
+        ; Send ^z
     }
 return
 
-~<#F19::
+<#F19::
+    f19 := true
+    if (f18)
+    {
+        return
+    }
     if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
     {
 
@@ -332,66 +350,43 @@ return
     }
 return
 
-~<#F18::
-{
-	SetTitleMatchMode, % (Setting_A_TitleMatchMode := A_TitleMatchMode) ? "RegEx" :
-	if WinExist("ahk_class Microsoft-Windows-.*SnipperToolbar")
-	{
-		WinGet, State, MinMax
-		if (State = -1)
-		{	
-			WinRestore
-			Send, ^n
-		}
-		else if WinActive()
-			WinMinimize
-		else
-		{
-			WinActivate
-			Send, ^n
-		}
-	}
-	else if WinExist("ahk_class Microsoft-Windows-.*SnipperEditor")
-	{
-		WinGet, State, MinMax
-		if (State = -1)
-			WinRestore
-		else if WinActive()
-			WinMinimize
-		else
-			WinActivate
-                Send, ^n
-	}
-	else
-	{
-		Run, snippingtool.exe
-		if (SubStr(A_OSVersion,1,2)=10)
-		{
-			WinWait, ahk_class Microsoft-Windows-.*SnipperToolbar,,3
-			Send, ^n
-		}
-	}
-	SetTitleMatchMode, %Setting_A_TitleMatchMode%
-	return
-}
-
-; #IfWinExist, ahk_class Shell_TrayWnd
-; {
-; #F20::
-    ; SetKeyDelay, 50 ; this is to prevent pressing (mapped) LWin before the physical keystroke of         the pen has been processed
-    ; {send, {LWin}
-    ; return
+<#F18::
+    f18 := true
+    f19 := false
+    f20 := false
+    t = 0
+    ; options:
+    ; S = suppress
+    ; v = visible (opposite of suppress)
+    ; L = length
+    sleep 700
+    if (f20)
+    {
+        Send ^{Tab}
+        ; MsgBox c tab
+    }
+    else if (f19)
+    {
+        Send +^{Tab}
+        ; MsgBox c tab2
+    }
+    else
+    {
+        ; Send ^{Tab}
+        ; Send {LWin Up}
+        ; Send {LWin}
+        ; Send {LWin Up}
+        Send ^!p
+        ; MsgBox c print
+        ; MsgBox not detected
+    }
+    f18 := false
+    f19 := false
+    f20 := false
+    ; else
+    ; {
     ; }
-; }
-; #IfWinActive, ahk_class Windows.UI.Core.CoreWindow
-; {
-; #F20::
-    ; SetKeyDelay, 50
-    ; {send {Esc}
-    ; return
-    ; }
-; }
-
+return
 
 ; Use mouse4 to hold ctrl for swapping screens
 XButton2::LCtrl
