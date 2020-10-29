@@ -632,6 +632,10 @@ CapsLock & s:: ;symbol insertion!
         send ∫
     else If (name = "sqrt")
         send √(){Left}
+    else If (name = "sub+")
+        send ₊
+    else If (name = "sub-")
+        send ₋
     else
         MsgBox, 0, ,Unrecognized symbol name!,0.3
     return
