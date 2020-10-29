@@ -329,8 +329,9 @@ f20 := false
     {
 
         MouseGetPos, StartX, StartY
-        Click, 175, 425
-        MouseMove, StartX, StartY
+        MouseMove, 175, 425
+        ; Click, 175, 425
+        ; MouseMove, StartX, StartY
         ; Send ^z
     }
 return
