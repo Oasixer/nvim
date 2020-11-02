@@ -319,6 +319,19 @@ f18 := false
 f19 := false
 f20 := false
 
+<^k::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send ^k
+        Send +{Tab}
+        Send +{Tab}
+        Send +{Tab}
+        Send ^v
+        Send +{Tab}
+    }
+return
+
+
 <#F20::
     f20 := true
     if (f18)
@@ -329,9 +342,10 @@ f20 := false
     {
 
         MouseGetPos, StartX, StartY
-        MouseMove, 175, 425
-        ; Click, 175, 425
-        ; MouseMove, StartX, StartY
+        ; MouseMove, 128, 397 
+        Click, 128, 397 ; location for bottom right in desktop mode and top left in tablet mode
+        ; Click, 175, 425 ; location for dead center in tablet mode
+        MouseMove, StartX, StartY
         ; Send ^z
     }
 return
