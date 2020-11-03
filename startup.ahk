@@ -651,6 +651,110 @@ CapsLock & s:: ;symbol insertion!
         send ₊
     else If (name = "sub-")
         send ₋
+    else If (name = "cura")
+        send 𝓪
+    else If(name = "curb")
+        send 𝓫
+    else If(name = "curc")
+        send 𝓬
+    else If(name = "curd")
+        send 𝓭
+    else If(name = "cure")
+        send 𝓮
+    else If(name = "curf")
+        send 𝓯
+    else If(name = "curg")
+        send 𝓰
+    else If(name = "curh")
+        send 𝓱
+    else If(name = "curi")
+        send 𝓲
+    else If(name = "curj")
+        send 𝓳
+    else If(name = "curk")
+        send 𝓴
+    else If(name = "curl")
+        send 𝓵
+    else If(name = "curm")
+        send 𝓶
+    else If(name = "curn")
+        send 𝓷
+    else If(name = "curo")
+        send 𝓸
+    else If(name = "curp")
+        send 𝓹
+    else If(name = "curq")
+        send 𝓺
+    else If(name = "curr")
+        send 𝓻
+    else If(name = "curs")
+        send 𝓼
+    else If(name = "curt")
+        send 𝓽
+    else If(name = "curu")
+        send 𝓾
+    else If(name = "curv")
+        send 𝓿
+    else If(name = "curw")
+        send 𝔀
+    else If(name = "curx")
+        send 𝔁
+    else If(name = "cury")
+        send 𝔂
+    else If(name = "curz")
+        send 𝔃
+    else If(name = "curA")
+        send 𝒜
+    else If(name = "curB")
+        send 𝐵
+    else If(name = "curC")
+        send 𝒞
+    else If(name = "curD")
+        send 𝒟
+    else If(name = "curE")
+        send 𝐸
+    else If(name = "curF")
+        send 𝐹
+    else If(name = "curG")
+        send 𝒢
+    else If(name = "curH")
+        send 𝐻
+    else If(name = "curI")
+        send 𝐼
+    else If(name = "curJ")
+        send 𝒥
+    else If(name = "curK")
+        send 𝒦
+    else If(name = "curL")
+        send 𝐿
+    else If(name = "curM")
+        send 𝑀
+    else If(name = "curN")
+        send 𝒩
+    else If(name = "curO")
+        send 𝒪
+    else If(name = "curP")
+        send 𝒫
+    else If(name = "curQ")
+        send 𝒬
+    else If(name = "curR")
+        send 𝑅
+    else If(name = "curS")
+        send 𝒮
+    else If(name = "curT")
+        send 𝒯
+    else If(name = "curU")
+        send 𝒰
+    else If(name = "curV")
+        send 𝒱
+    else If(name = "curW")
+        send 𝒲
+    else If(name = "curX")
+        send 𝒳
+    else If(name = "curY")
+        send 𝒴
+    else If(name = "curZ")
+        send 𝒵
     else
         MsgBox, 0, ,Unrecognized symbol name!,0.3
     return
