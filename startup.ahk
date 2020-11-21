@@ -79,7 +79,7 @@ Rshift & Backspace::Send {Delete}
 +Esc::Send ~
 Capslock & Esc::SendRaw ``
 Capslock & g::Send {Home}
-Capslock & '::Send {End}
+Capslock & SC027::Send {End}
 
 Capslock & h::
     shift := false
