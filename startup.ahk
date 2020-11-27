@@ -78,9 +78,8 @@ Capslock & Backspace::Delete
 Rshift & Backspace::Send {Delete}
 +Esc::Send ~
 Capslock & Esc::SendRaw ``
-Capslock & g::Send {Home}
-Capslock & SC027::Send {End}
-Capslock & Enter::Send +{Enter}
+
+Capslock & d::Send {delete}
 
 Capslock & h::
     shift := false
@@ -202,111 +201,6 @@ Capslock & l::
         Send {RControl Up}
 return
 
-
-; lwin::
-    ; h := false
-    ; l := false
-    ; r := false
-    ; shift_s := false
-    ; hasPressed := false
-    ; all := ""
-    ; temp := 0
-    ; time = 0
-
-
-    ; ; Send {LWin Down}
-    ; While(1=1)
-    ; {
-        ; ; test := KeyWaitCombo()
-        ; ; MsgBox %test%
-        ; If(GetKeyState("LShift", "P") and GetKeyState("s", "P"))
-        ; {
-            ; ; MsgBox hi
-            ; return
-        ; }
-        
-        ; If(GetKeyState("LShift", "P") and GetKeyState("1", "P"))
-        ; {
-            ; Send #+{Left}
-            ; Sleep 15
-            ; return
-        ; }
-
-        ; If(GetKeyState("LShift", "P") and GetKeyState("2", "P"))
-        ; {
-            ; Send #+{Right}
-            ; Sleep 15
-            ; return
-        ; }
-        
-        ; if(GetKeyState("r", "P"))
-        ; {
-            ; Send #r
-            ; return
-        ; }
-        
-        ; If(GetKeyState("d", "P"))
-        ; {
-            ; Send #d
-            ; return
-        ; }
-        ; If(GetKeyState("x", "P"))
-        ; {
-            ; Send #x
-            ; return
-        ; }
-        ; If(GetKeyState("h", "P"))
-        ; {
-            ; If !h
-            ; {
-                ; If(!GetKeyState("Alt", "P"))
-                ; {
-                    ; Send {Alt Down}
-                ; }
-                ; Send {Shift Down}{Tab}{Shift Up}
-                ; hasPressed := true
-                ; h := true
-            ; }
-        ; }
-        ; Else
-        ; {
-            ; h := false
-        ; }
-
-        ; If(GetKeyState("l", "P"))
-        ; {
-            ; If(!l)
-            ; {
-                ; Send {Alt Down}
-                ; Send {Tab}
-                ; Send {Alt Up}
-                ; hasPressed := true
-                ; l := true
-            ; }
-        ; }
-        ; else
-        ; {
-            ; l := false
-        ; }
-
-        ; if(!GetKeyState("LWin", "P"))
-        ; {
-            ; if(!hasPressed)
-            ; {
-                ; if(time < 300)
-                ; {
-                    ; Send {LWin}
-                ; }
-            ; }
-            ; break
-        ; }
-
-        ; Sleep 5 ;to make this loop less cpu intensive
-        ; time := time + 5
-    ; }
-    ; ; Send {Alt up}
-    ; ; Send {LWin up}
-; return
 
 ; SURFACE PEN
 ; Pressing the eraser button of the Surface Pen sends a hotkey combination of Windows Key + F18/19/20 Function Key, 
