@@ -78,6 +78,8 @@ Capslock & Backspace::Delete
 Rshift & Backspace::Send {Delete}
 +Esc::Send ~
 Capslock & Esc::SendRaw ``
+Capslock & `;::Send {end}
+Capslock & g::Send {home}
 
 Capslock & d::Send {delete}
 
