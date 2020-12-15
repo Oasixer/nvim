@@ -81,7 +81,14 @@ Capslock & Esc::SendRaw ``
 Capslock & `;::Send {end}
 Capslock & g::Send {home}
 
-Capslock & d::Send {delete}
+Capslock & d::
+    if(GetKeyState("Control", "P"))
+    {
+        SetCapsLockState, AlwaysOff
+        return
+    }
+    Send {delete}
+    return
 
 Capslock & h::
     shift := false
@@ -305,13 +312,17 @@ return
 ; Use mouse4 to hold ctrl for swapping screens
 ; XButton2::LCtrl
 
-CapsLock & r::
+CapsLock & r:: ; Reload script
     ; reload
     Run, "C:\Users\%A_Username%\.config\nvim\startup.ahk"
     ; this lower version doesnt work bc no matter what I try the unicode doesnt work ie AHK launches in ANSI mode
     ; even if I run AutoHotkey_U32.exe...
     ; Run, C:\Program Files\AutoHotkey\AutoHotkey.exe "C:\Users\%A_Username%\.config\nvim\startup.ahk"
     Sleep 300
+    while(GetKeyState("r", "P"))
+    {
+        sleep 50
+    }
     Send {Enter}
     return
     
