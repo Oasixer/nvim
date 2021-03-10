@@ -2,6 +2,7 @@
   " silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   " autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 " endif
+silent exec "!source ~/.bashrc"
 let autoload_plug_path = stdpath('config') . '/autoload/plug.vim'
 if !filereadable(autoload_plug_path)
     exe '!curl -fL --create-dirs -o ' . autoload_plug_path . 
@@ -11,6 +12,14 @@ if !filereadable(autoload_plug_path)
     let plug_install = 1
 endif
 unlet autoload_plug_path
+let nerdtree_yank_path = stdpath('config') . '/plugged/nerdtree/nerdtree_plugin/yank_mapping.vim'
+let nerdtree_yank_custom_in_root = stdpath('config') . '/nerdtree_custom_yank_mapping.vim'
+if !filereadable(nerdtree_yank_path)
+    exe '!cp ' . nerdtree_yank_custom_in_root . ' ' . nerdtree_yank_path
+    echo filereadable(nerdtree_yank_path)
+endif
+unlet nerdtree_yank_path
+unlet nerdtree_yank_custom_in_root
 
 call plug#begin('~/.config/nvim/plugged') "PLUGINS ----------------------------------
 Plug 'joshdick/onedark.vim'
@@ -18,6 +27,9 @@ Plug 'iCyMind/NeoSolarized'
 
 "colour scheme
 Plug 'w0ng/vim-hybrid'
+
+"vim git integrations
+Plug 'tpope/vim-fugitive'
 
 " Polyglot syntax highlighting for various languages
 Plug 'sheerun/vim-polyglot'
@@ -30,6 +42,9 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 
 " SCSS syntax highlighting
 Plug 'cakebaker/scss-syntax.vim'
+
+" go support
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Lightline (lightweight status line)
 Plug 'itchyny/lightline.vim'
@@ -52,8 +67,7 @@ Plug 'https://tpope.io/vim/repeat.git'
 "autocomplete via COC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " To install language servers after installing release branch (above), just
-" Use CocInstall coc-css, CocInstall coc-python, etc.
-" For list of the coc languageservers i use, see coc section way below
+" Use CocInstall (for list of the coc languageservers i use, see coc section way below)
 
 "Plug 'jackguo380/vim-lsp-cxx-highlight'
 
@@ -63,11 +77,14 @@ Plug 'derekwyatt/vim-fswitch'
 "bunch of snippets
 Plug 'honza/vim-snippets'
 
-"delimitor (auto close brackets)
+"delimitor (auto close brackets) () NOT surround.vim but similar
 Plug 'raimondi/delimitmate'
 
 "nerdtree (file browser)
 Plug 'scrooloose/nerdtree'
+
+" grep integration with nerdtree
+Plug 'MarSoft/nerdtree-grep-plugin'
 
 " nerd commenter
 Plug 'scrooloose/nerdcommenter'
@@ -215,6 +232,8 @@ if (empty($TMUX))
     set termguicolors
   endif
 endif
+
+let g:go_version_warning = 0
 
 " Distinguish <C-i> from <Tab>
 " doesnt seem to work for termite, so im disabling this for now
@@ -400,6 +419,15 @@ nnoremap <silent> <Esc> :noh<CR>
 nnoremap Y y$
 
 " VIMGREP GREPFILES REPFILES grep search related
+
+" VIMGREP vimgrep -------------------------------------
+" Shortcuts for using :vimgrep which does NOT replace
+vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
+nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
+nnoremap <Leader>vn :cnext<CR>
+nnoremap <Leader>vN :cprev<CR>
+
+" GREPFILES ------------------------
 " RepFiles is a little function that I made that runs a find and
 " replace on all the files in the enclosing directory of the current buffer.
 "
@@ -413,11 +441,6 @@ nnoremap Y y$
 " Find old and replace with new, recursively, in ENCLOSING directory of cur buffer:
 "     :RepFiles /old/new/g ../**/*
 
-" Shortcuts for using :vimgrep which does NOT replace
-vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
-nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
-nnoremap <Leader>vn :cnext<CR>
-nnoremap <Leader>vN :cprev<CR>
 
 command! -nargs=+ RepFiles call RepFiles(<f-args>)
 function! RepFiles( ... )
@@ -506,6 +529,11 @@ command! Notes e ~/Documents/notes
 command! Tnotes tabe ~/Documents/notes
 command! Hnotes split ~/Documents/notes
 
+command! Vgit vsplit ~/Documents/notes/git.md
+command! Ngit e ~/Documents/notes/git.md
+command! Tgit tabe ~/Documents/notes/git.md
+command! Hgit split ~/Documents/notes/git.md
+
 " RELOAD init.vim 
 command! RL source ~/.config/nvim/init.vim
 "
@@ -539,7 +567,6 @@ function! IsNerdTreeCurrentBuffer()
 endfunction
 
 function! GotoBookmarks()
-    " echo "hi"
     if IsNerdTreeEnabled()
         if IsNerdTreeCurrentBuffer() == 0
             norm 15h 
@@ -562,6 +589,17 @@ endfunction
 autocmd VimEnter * :nnoremap B :call GotoBookmarks()<CR>
 nnoremap B :call GotoBookmarks()<CR>
 
+function! CopyCWD()
+    if IsNerdTreeEnabled() == 1 && IsNerdTreeCurrentBuffer() == 1
+        norm "+yy
+    else
+        let @+=expand("%:p:h")
+    endif
+endfunction
+
+command! CopyCWD call CopyCWD()
+
+
 " --------------------------------------------------
 
 " LATEX PREVIEW / LLP-------------------
@@ -583,6 +621,7 @@ nnoremap B :call GotoBookmarks()<CR>
 " nnoremap <Leader>fix :ALEFix<CR>
 " ----------------------------------------
 " COC AUTOCOMPLETE COMPLETION COC-SETTINGS LANGUAGESERVERS COC SETTINGS
+" COC-PLUGINS COC PLUGINS
 
 " Language servers (install using, for example, :CocInstall coc-css)
 " coc-snippets
@@ -594,6 +633,8 @@ nnoremap B :call GotoBookmarks()<CR>
 " coc-svelte
 " coc-clangd
 " coc-json
+"
+let g:coc_disable_startup_warning = 1
 
 " Map alt j and alt k to up and down in the autocomplete popup (if the
 " autocomplete popup is open), otherwise just leave them the same
@@ -650,6 +691,7 @@ endfunction
 
 " GoTo code navigation (COC)
 nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> <Leader>gd :split<CR><A-j><Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
@@ -702,7 +744,7 @@ onoremap io iw
 onoremap ao aw
 
 " TEXTOBJ STUFF VIM-TEXTOBJ ---
-" Note: doesnt seem to be working rn
+" Note: only works in linux for some reason
 xmap ae <Plug>(textobj-entire-a)
 xmap ie <Plug>(textobj-entire-i)
 omap ae <Plug>(textobj-entire-a)
@@ -716,6 +758,14 @@ set matchpairs+=<:>
 " below: TODO: adapt this aucommand into the ftplugin files for filetype specific
 " matchpairs
 " au FileType vim,html let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+
+" key bindings for avoiding delimitmate
+inoremap <A-[> [
+inoremap <A-]> ]
+inoremap <A-(> (
+inoremap <A-)> )
+inoremap <A-"> "
+inoremap <A-'> '
 
 " PYTHON JUPYTER JUPYTER-VIM -------------------------------------------------
 let g:jupyter_mapkeys = 0
@@ -744,6 +794,10 @@ let g:NERDAltDelims_cpp = 1
 
 " CSS COLORIZER
 let g:colorizer_fgcontrast = 0
+
+" GO SHIT FOR vim-go --------------------------------------------------------
+let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save     
+let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor     
 
 " END PLUGIN SHIT -----------------------------------------------
 
@@ -774,6 +828,25 @@ augroup numbertoggle
 	autocmd BufEnter,FocusGained,InsertLeave * call NoRelNumIfNerdTree()
 	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
 augroup END
+
+" fill rest of line with characters
+function! FillLine( str )
+    " set tw to the desired total length
+    let tw = &textwidth
+    if tw==0 | let tw = 80 | endif
+    " strip trailing spaces first
+    .s/[[:space:]]*$//
+    " calculate total number of 'str's to insert
+    let reps = (tw - col("$")) / len(a:str)
+    " insert them, if there's room, removing trailing spaces (though forcing
+    " there to be one)
+    if reps > 0
+        .s/$/\=(' '.repeat(a:str, reps))/
+    endif
+endfunction
+
+" use f12 to fill hyphens up to col 80
+map <F12> $:call FillLine('-')<CR>
 
 " Override g; so that if we are already at the most recent edit, we hit g;
 " again. to go to the actual last edit that wasn't where we currently are
