@@ -2,6 +2,8 @@
   " silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   " autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 " endif
+let $TMPDIR = "/tmp"
+silent exec "!source /etc/profile"
 silent exec "!source ~/.bashrc"
 let autoload_plug_path = stdpath('config') . '/autoload/plug.vim'
 if !filereadable(autoload_plug_path)
@@ -125,6 +127,7 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 call plug#end() 
 
@@ -591,7 +594,8 @@ nnoremap B :call GotoBookmarks()<CR>
 
 function! CopyCWD()
     if IsNerdTreeEnabled() == 1 && IsNerdTreeCurrentBuffer() == 1
-        norm "+yy
+        norm yy
+        let @+=getreg("0")
     else
         let @+=expand("%:p:h")
     endif
