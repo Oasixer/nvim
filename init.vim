@@ -7,7 +7,7 @@ silent exec "!source /etc/profile"
 silent exec "!source ~/.bashrc"
 let autoload_plug_path = stdpath('config') . '/autoload/plug.vim'
 if !filereadable(autoload_plug_path)
-    exe '!curl -fL --create-dirs -o ' . autoload_plug_path . 
+    exec '!curl -fL --create-dirs -o ' . autoload_plug_path . 
         \ ' https://raw.github.com/junegunn/vim-plug/master/plug.vim'
     echo filereadable(autoload_plug_path)
     execute 'source ' . fnameescape(autoload_plug_path)
@@ -36,7 +36,10 @@ Plug 'tpope/vim-fugitive'
 " Polyglot syntax highlighting for various languages
 Plug 'sheerun/vim-polyglot'
 
+" Plug 'burner/vim-svelte'
 " Svelte syntax highlighting (integrates w/ polyglot)
+
+" I used to use this one but the indentation is hella broken for me
 Plug 'evanleck/vim-svelte'
 
 " CPP syntax highlighting (integrates w/ polyglot)
@@ -91,6 +94,9 @@ Plug 'MarSoft/nerdtree-grep-plugin'
 " nerd commenter
 Plug 'scrooloose/nerdcommenter'
 
+" context_filetype for setting up nerd comments with svelte, html, etc
+Plug 'Shougo/context_filetype.vim'
+
 " Paint css colors with the real color
 Plug 'lilydjwg/colorizer'
 
@@ -128,6 +134,8 @@ Plug 'kana/vim-textobj-entire'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+
+Plug 'dbakker/vim-projectroot'
 
 call plug#end() 
 
@@ -542,6 +550,45 @@ command! RL source ~/.config/nvim/init.vim
 "
 
 "PLUGIN SHIT--------------------------------------------------------------------------
+"
+"FZF
+
+nnoremap <silent> <C-g> :ProjectRootExe Ag<cr>
+nnoremap <silent> <C-h> :cd %:p:h<cr>:Gr<cr>
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+command! -bang -nargs=* Gr call fzf#vim#grep(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+" nnoremap <leader>rc :ProjectRootCD<cr>
+" nnoremap <silent> <C-f> :ProjectRootExe Files<CR>
+nnoremap <silent> <C-f> :ProjectRootExe GFiles<CR>
+" nnoremap <silent> <C-g>g :ProjectRootExe GGrep<CR>
+" nnoremap <silent> <C-S-a> :ProjectRootExe Ag<CR>
+" nnoremap <silent> <C-a> :Ag<CR>
+
+" function! RipgrepFzf(query, fullscreen)
+  " let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  " let initial_command = printf(command_fmt, shellescape(a:query))
+  " let reload_command = printf(command_fmt, '{q}')
+  " let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  " call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+" endfunction
+
+" command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+" nnoremap <C-g>r :ProjectRootExe RG<CR>
+
+" nnoremap <leader>dp :ProjectRootCD<cr>
+" command! -bang -nargs=* GGrep
+  " \ call fzf#vim#grep(
+  " \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  " \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+" nnoremap <A-a> :AGInParentGitRepo
+" command! -bang -nargs=* AGInParentGitRepo
+  " \ call fzf#vim#grep(
+  " \   'ag -r --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  " \   fzf#vim#with_preview(), <bang>0)
+
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
 " NERDTREE ------------------------------------------
 "open nerdtree on vim startup
@@ -549,6 +596,11 @@ command! RL source ~/.config/nvim/init.vim
 
 function! IsNerdTreeEnabled()
     return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfunction
+
+function! FindParentGitRepo()
+    let dir = finddir('.git/..', expand('%:p:h').';')
+    return dir
 endfunction
 
 "show hidden files by default
@@ -595,7 +647,11 @@ nnoremap B :call GotoBookmarks()<CR>
 function! CopyCWD()
     if IsNerdTreeEnabled() == 1 && IsNerdTreeCurrentBuffer() == 1
         norm yy
-        let @+=getreg("0")
+        if !isdirectory(getreg("0"))
+          let @+= substitute(getreg("0"),'\(^.*\)\/[^\/]*$', '\1', 'i')
+        else
+          let @+=getreg("0")
+        endif
     else
         let @+=expand("%:p:h")
     endif
@@ -802,11 +858,87 @@ let g:colorizer_fgcontrast = 0
 " GO SHIT FOR vim-go --------------------------------------------------------
 let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save     
 let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor     
+let g:go_fmt_autosave = 0             " autoformat on save
+
+" --------------------------NERDCOMMENTER SET UP svelte, vue.js, html
+
+" svelte-vim vim-svelte setup indent shit
+let g:svelte_indent_script = 1
+let g:vim_svelte_plugin_load_full_syntax = 1
+
+
+if !exists('g:context_filetype#same_filetypes')
+  let g:context_filetype#filetypes = {}
+endif
+let g:context_filetype#filetypes.svelte =
+\ [
+\   {'filetype' : 'javascript', 'start' : '<script>', 'end' : '</script>'},
+\   {
+\     'filetype': 'typescript',
+\     'start': '<script\%( [^>]*\)\? \%(ts\|lang="\%(ts\|typescript\)"\)\%( [^>]*\)\?>',
+\     'end': '</script>',
+\   },
+\   {'filetype' : 'css', 'start' : '<style \?.*>', 'end' : '</style>'},
+\ ]
+
+let g:ft = ''
+fu! NERDCommenter_before()
+  if (&ft == 'html') || (&ft == 'svelte') || (&ft == 'vue')
+    let g:ft = &ft
+    let cfts = context_filetype#get_filetypes()
+    if len(cfts) > 0
+      if cfts[0] == 'svelte'
+        let cft = 'html'
+      elseif cfts[0] == 'scss'
+        let cft = 'css'
+      else
+        let cft = cfts[0]
+      endif
+      exe 'setf ' . cft
+    endif
+  endif
+endfu
+fu! NERDCommenter_after()
+  if (g:ft == 'html') || (g:ft == 'svelte') || (g:ft == 'vue')
+    exec 'setf ' . g:ft
+    let g:ft = ''
+  endif
+endfu
+
 
 " END PLUGIN SHIT -----------------------------------------------
 
 " ---------------------------------------------------------------------------------
 " LONG ASS SCRIPTS AND SHIT
+"
+" SVELTE+SCSS COMPONENT CREATOR---------------------------------------------------
+
+command! -nargs=1 SvNew call SvNew(<q-args>)
+function! SvNew( ... )
+  if !IsNerdTreeCurrentBuffer()
+    echo "Must be in nerdtree!"
+    return
+  endif
+  " create directory
+  exe "normal ma" . a:1 . "/"
+  " create svelte file in that dir
+  exe "normal ma" . a:1 . ".svelte"
+  " create scss file in that dir
+  exe "normal ma" . a:1 . ".scss"
+  " open directory in new tab
+  exe "normal /" . a:1 . "t"
+  " open svelte file
+  exe "normal 2j"
+
+  let svelteContent = ["<script>",
+      \"  import Xyz from '../Xyz.svelte'",
+      \"</script>",
+      \"<style src='" . a:1 . ".scss" . "'></style>"]
+  call append(line('$'), svelteContent)
+
+  " delete empty line @ top of file
+  normal ggdd
+endfunction
 
 " How to make stuff ACTUALLY silent (this is not needed for GUI vim but I only
 " use that in windows, so I need this for linux.
@@ -817,8 +949,7 @@ command! -nargs=1 Silent
 " LINE NUMBERING RELATED ---------------------------------------
 " Fix relative numbers for nerdtree
 function! NoRelNumIfNerdTree()
-    let isNERDTreeBuffer = (bufname("%") =~ "NERD_Tree_")?1:0
-    if isNERDTreeBuffer
+    if IsNerdTreeCurrentBuffer()
         "no line numbers in nerdtree
         set norelativenumber
     endif
@@ -875,6 +1006,20 @@ function! OverrideGotoLastEdit()
         endtry
     endif
 endfunction
+
+" Display tabs as green, spaces as white
+function! ToggleWhitespace()
+  if &filetype == 'whitespace'
+    exe "setlocal ft=" . b:oldft
+  else
+    let b:oldft = &filetype
+    setlocal ft=whitespace
+  endif
+endfunction
+  
+command! ToggleWhitespace :call ToggleWhitespace()
+command! TW :call ToggleWhitespace()
+
 
 " Super useful function that swaps the position of the last two windows
 " well technically it swaps the buffers contained in the last two windows
@@ -976,14 +1121,15 @@ endif
 
 " Indentation settings for using hard tabs for indent. Display tabs as
 " four characters wide.
-set shiftwidth=4
-set expandtab "tab key becomes {shiftwidth} spaces
-set smartindent
+" set shiftwidth=2
+" set expandtab "tab key becomes {shiftwidth} spaces
+" set smartindent
 "  'ts' : number of spaces that <Tab> in file uses (tabstop)
 "  'sw'	: number of spaces to use for (auto)indent step (shiftwidth)
 
 " SCSS SASS SYNTAX HIGHLIGHTING ----------------------
-" au! BufRead,BufNewFile *.scss setfiletype scss
+au! BufRead,BufNewFile *.scss setfiletype scss
+autocmd FileType scss setl iskeyword+=@-@
 
 filetype plugin on
-
+exe "set ft=" . &filetype
