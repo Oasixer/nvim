@@ -40,6 +40,10 @@ Plug 'itchyny/vim-gitbranch'
 "camelCase and snake_case motion for words
 Plug 'chaoren/vim-wordmotion'
 
+" highlight current word and all occurances of it
+" (useful for predicting wordmotion and shit)
+Plug 'dominikduda/vim_current_word'
+
 " surround (for enclosing '/"/(/[/{/< features)
 Plug 'tpope/vim-surround'
 
@@ -162,8 +166,9 @@ set hidden
 
 set noshowmode
 
-" highlighting
-set hlsearch
+" highlighting highlight search
+" set hlsearch
+set nohlsearch
 
 set ignorecase
 set smartcase
@@ -435,6 +440,10 @@ function! RepFiles( ... )
     execute printf('edit %s', curFile)
 endfunction
 
+" C-r to find and replace word under cursor like <C-r><C-w> but for original
+" words (not affected by camelCaseMotion from wordmotion
+nnoremap <C-r> "ryiw:%s/\<r\>//g<Left><Left>
+
 " DELETING / ADDING NEWLINES (BLANK LINES) ABOVE / BELOW
 
 nnoremap <silent><Leader>j :set paste<CR>m`o<Esc>``:set nopaste<CR>
@@ -511,6 +520,28 @@ command! RL source ~/.config/nvim/init.vim
 "
 
 "PLUGIN SHIT--------------------------------------------------------------------------
+" CURRENT WORD CURRENTWORD
+" highlight twins of current word
+let g:vim_current_word#highlight_twins = 1
+
+" highlight the word under cursor:
+let g:vim_current_word#highlight_current_word = 1
+
+ " delay in ms
+let g:vim_current_word#highlight_delay = 300
+
+" styling
+hi CurrentWord guibg=#101010 
+hi CurrentWordTwins guibg=#202060
+"hi CurrentWord guifg=#XXXXXX guibg=#XXXXXX gui=underline,bold,italic ctermfg=XXX ctermbg=XXX cterm=underline,bold,italic
+"                      └┴┴┴┴┴──┐     └┴┴┴┴┤     └┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┤         └┴┤         └┴┤       └┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┤
+"   gui-vim font color hex code│          │   gui-vim special styles│           │           │ console-vim special styles│
+"   ───────────────────────────┘          │   ──────────────────────┘           │           │ ──────────────────────────┘
+"        gui-vim background color hex code│     console-vim font term color code│           │
+"        ─────────────────────────────────┘     ────────────────────────────────┘           │
+"                                                     console-vim background term color code│
+"                                                     ──────────────────────────────────────┘
+
 
 " NERDTREE ------------------------------------------
 "open nerdtree on vim startup
@@ -703,6 +734,8 @@ onoremap ao aw
 
 " TEXTOBJ STUFF VIM-TEXTOBJ ---
 " Note: doesnt seem to be working rn
+" Note: it does work on windows 10 + neovim as of 2020! neat. I knew I kept
+" this for some reason
 xmap ae <Plug>(textobj-entire-a)
 xmap ie <Plug>(textobj-entire-i)
 omap ae <Plug>(textobj-entire-a)

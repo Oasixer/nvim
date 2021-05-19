@@ -1,7 +1,10 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#SingleInstance, force
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+
+mode := "n"
 
 ; disabling bullshit via regedit
 
@@ -82,6 +85,7 @@ Capslock & `;::Send {end}
 Capslock & g::Send {home}
 
 Capslock & d::Send {delete}
+Alt & d::Send https://discord.gg/7WQwrtkA
 
 Capslock & h::
     shift := false
@@ -242,7 +246,7 @@ return
 
         MouseGetPos, StartX, StartY
         ; MouseMove, 128, 397 
-        Click, 128, 397 ; location for bottom right in desktop mode and top left in tablet mode
+        Click, 128, 397 ; location or bottom right in desktop mode and top left in tablet mode
         ; Click, 175, 425 ; location for dead center in tablet mode
         MouseMove, StartX, StartY
         ; Send ^z
@@ -654,6 +658,48 @@ CapsLock & s:: ;symbol insertion!
         send 𝒴
     else If(name = "curZ")
         send 𝒵
+    else If((name = "deg") or (name = "degree") or (name = "degrees"))
+        send °
+    else If((name = "=/=") or (name = "!=") or (name = "notequal") or (name = "notequalto") or (name = "notequals"))
+        send ≠
+    else If(name = "xbar")
+        send x̄
+    else If(name = "ybar")
+        send ȳ
     else
         MsgBox, 0, ,Unrecognized symbol name!,0.3
     return
+
+; run thingiverse extractor script
+Capslock & t::
+    run, python.exe C:\Users\Kaelan\Documents\code\thingiverse_downloader\thingiverse_downloader.py
+
+Capslock & p::
+    run, python.exe C:\Users\Kaelan\Documents\code\prusaslicer_config_fixer\script.py
+
+; mode switching
+; CapsLock & m::
+    ; name =
+    ; winTitle := "Input Mode Name (blank for none)"
+    ; winPrompt := "u"
+    ; width =
+    ; height =
+    ; x =
+    ; y =
+    ; locale =
+    ; timeout =
+    ; InputBox, name, %winTitle%, %winPrompt%, , %width%, %height%, %x%, %y%, %locale%, %timeout%
+    ; If(name = "u") ; microvision
+        ; mode := "u"
+    ; else If(name = "fixCaps")
+    ; {
+        ; Send {CapsLock}
+        ; mode := "n"
+    ; }
+    ; else
+        ; mode := "n"
+
+    ; return
+    
+
+
