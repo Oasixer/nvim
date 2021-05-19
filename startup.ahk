@@ -228,12 +228,35 @@ f20 := false
 <^k::
     if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
     {
-        Send ^k
+        Send ^k ; create link
         Send +{Tab}
         Send +{Tab}
         Send +{Tab}
         Send ^v
         Send +{Tab}
+    }
+return
+
+<^+k::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
+        sleep 700
+        Send {Alt down}{Home}{Alt up} ; switch to first pg
+    }
+return
+
+<^+c::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
+    }
+return
+
+<^h::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send {Alt down}{Home}{Alt up} ; switch to first pg
     }
 return
 
