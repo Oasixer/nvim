@@ -2,15 +2,26 @@
   " silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   " autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 " endif
+let $TMPDIR = "/tmp"
+silent exec "!source /etc/profile"
+silent exec "!source ~/.bashrc"
 let autoload_plug_path = stdpath('config') . '/autoload/plug.vim'
 if !filereadable(autoload_plug_path)
-    exe '!curl -fL --create-dirs -o ' . autoload_plug_path . 
+    exec '!curl -fL --create-dirs -o ' . autoload_plug_path . 
         \ ' https://raw.github.com/junegunn/vim-plug/master/plug.vim'
     echo filereadable(autoload_plug_path)
     execute 'source ' . fnameescape(autoload_plug_path)
     let plug_install = 1
 endif
 unlet autoload_plug_path
+let nerdtree_yank_path = stdpath('config') . '/plugged/nerdtree/nerdtree_plugin/yank_mapping.vim'
+let nerdtree_yank_custom_in_root = stdpath('config') . '/nerdtree_custom_yank_mapping.vim'
+if !filereadable(nerdtree_yank_path)
+    exe '!cp ' . nerdtree_yank_custom_in_root . ' ' . nerdtree_yank_path
+    echo filereadable(nerdtree_yank_path)
+endif
+unlet nerdtree_yank_path
+unlet nerdtree_yank_custom_in_root
 
 call plug#begin('~/.config/nvim/plugged') "PLUGINS ----------------------------------
 Plug 'joshdick/onedark.vim'
@@ -19,10 +30,16 @@ Plug 'iCyMind/NeoSolarized'
 "colour scheme
 Plug 'w0ng/vim-hybrid'
 
+"vim git integrations
+Plug 'tpope/vim-fugitive'
+
 " Polyglot syntax highlighting for various languages
 Plug 'sheerun/vim-polyglot'
 
+" Plug 'burner/vim-svelte'
 " Svelte syntax highlighting (integrates w/ polyglot)
+
+" I used to use this one but the indentation is hella broken for me
 Plug 'evanleck/vim-svelte'
 
 " CPP syntax highlighting (integrates w/ polyglot)
@@ -30,6 +47,9 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 
 " SCSS syntax highlighting
 Plug 'cakebaker/scss-syntax.vim'
+
+" go support
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Lightline (lightweight status line)
 Plug 'itchyny/lightline.vim'
@@ -56,8 +76,7 @@ Plug 'https://tpope.io/vim/repeat.git'
 "autocomplete via COC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " To install language servers after installing release branch (above), just
-" Use CocInstall coc-css, CocInstall coc-python, etc.
-" For list of the coc languageservers i use, see coc section way below
+" Use CocInstall (for list of the coc languageservers i use, see coc section way below)
 
 "Plug 'jackguo380/vim-lsp-cxx-highlight'
 
@@ -67,14 +86,20 @@ Plug 'derekwyatt/vim-fswitch'
 "bunch of snippets
 Plug 'honza/vim-snippets'
 
-"delimitor (auto close brackets)
+"delimitor (auto close brackets) () NOT surround.vim but similar
 Plug 'raimondi/delimitmate'
 
 "nerdtree (file browser)
 Plug 'scrooloose/nerdtree'
 
+" grep integration with nerdtree
+Plug 'MarSoft/nerdtree-grep-plugin'
+
 " nerd commenter
 Plug 'scrooloose/nerdcommenter'
+
+" context_filetype for setting up nerd comments with svelte, html, etc
+Plug 'Shougo/context_filetype.vim'
 
 " Paint css colors with the real color
 Plug 'lilydjwg/colorizer'
@@ -112,6 +137,9 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+Plug 'dbakker/vim-projectroot'
 
 call plug#end() 
 
@@ -214,12 +242,12 @@ if (empty($TMUX))
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   endif
   "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
   if (has("termguicolors"))
     set termguicolors
   endif
 endif
+
+let g:go_version_warning = 0
 
 " Distinguish <C-i> from <Tab>
 " doesnt seem to work for termite, so im disabling this for now
@@ -405,6 +433,15 @@ nnoremap <silent> <Esc> :noh<CR>
 nnoremap Y y$
 
 " VIMGREP GREPFILES REPFILES grep search related
+
+" VIMGREP vimgrep -------------------------------------
+" Shortcuts for using :vimgrep which does NOT replace
+vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
+nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
+nnoremap <Leader>vn :cnext<CR>
+nnoremap <Leader>vN :cprev<CR>
+
+" GREPFILES ------------------------
 " RepFiles is a little function that I made that runs a find and
 " replace on all the files in the enclosing directory of the current buffer.
 "
@@ -418,11 +455,6 @@ nnoremap Y y$
 " Find old and replace with new, recursively, in ENCLOSING directory of cur buffer:
 "     :RepFiles /old/new/g ../**/*
 
-" Shortcuts for using :vimgrep which does NOT replace
-vnoremap <Leader>vg "iy:cd %:p:h<CR>:vimgrep /<C-r>i/ *<CR>
-nnoremap <Leader>vg :cd %:p:h<CR>:vimgrep // *<Left><Left><Left>
-nnoremap <Leader>vn :cnext<CR>
-nnoremap <Leader>vN :cprev<CR>
 
 command! -nargs=+ RepFiles call RepFiles(<f-args>)
 function! RepFiles( ... )
@@ -515,6 +547,11 @@ command! Notes e ~/Documents/notes
 command! Tnotes tabe ~/Documents/notes
 command! Hnotes split ~/Documents/notes
 
+command! Vgit vsplit ~/Documents/notes/git.md
+command! Ngit e ~/Documents/notes/git.md
+command! Tgit tabe ~/Documents/notes/git.md
+command! Hgit split ~/Documents/notes/git.md
+
 " RELOAD init.vim 
 command! RL source ~/.config/nvim/init.vim
 "
@@ -542,6 +579,44 @@ hi CurrentWordTwins guibg=#202060
 "                                                     console-vim background term color code│
 "                                                     ──────────────────────────────────────┘
 
+"FZF
+
+nnoremap <silent> <C-g> :ProjectRootExe Ag<cr>
+nnoremap <silent> <C-h> :cd %:p:h<cr>:Gr<cr>
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+command! -bang -nargs=* Gr call fzf#vim#grep(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+" nnoremap <leader>rc :ProjectRootCD<cr>
+" nnoremap <silent> <C-f> :ProjectRootExe Files<CR>
+nnoremap <silent> <C-f> :ProjectRootExe GFiles<CR>
+" nnoremap <silent> <C-g>g :ProjectRootExe GGrep<CR>
+" nnoremap <silent> <C-S-a> :ProjectRootExe Ag<CR>
+" nnoremap <silent> <C-a> :Ag<CR>
+
+" function! RipgrepFzf(query, fullscreen)
+  " let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  " let initial_command = printf(command_fmt, shellescape(a:query))
+  " let reload_command = printf(command_fmt, '{q}')
+  " let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  " call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+" endfunction
+
+" command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+" nnoremap <C-g>r :ProjectRootExe RG<CR>
+
+" nnoremap <leader>dp :ProjectRootCD<cr>
+" command! -bang -nargs=* GGrep
+  " \ call fzf#vim#grep(
+  " \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  " \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+" nnoremap <A-a> :AGInParentGitRepo
+" command! -bang -nargs=* AGInParentGitRepo
+  " \ call fzf#vim#grep(
+  " \   'ag -r --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  " \   fzf#vim#with_preview(), <bang>0)
+
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
 " NERDTREE ------------------------------------------
 "open nerdtree on vim startup
@@ -549,6 +624,11 @@ hi CurrentWordTwins guibg=#202060
 
 function! IsNerdTreeEnabled()
     return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfunction
+
+function! FindParentGitRepo()
+    let dir = finddir('.git/..', expand('%:p:h').';')
+    return dir
 endfunction
 
 "show hidden files by default
@@ -570,7 +650,6 @@ function! IsNerdTreeCurrentBuffer()
 endfunction
 
 function! GotoBookmarks()
-    " echo "hi"
     if IsNerdTreeEnabled()
         if IsNerdTreeCurrentBuffer() == 0
             norm 15h 
@@ -593,6 +672,22 @@ endfunction
 autocmd VimEnter * :nnoremap B :call GotoBookmarks()<CR>
 nnoremap B :call GotoBookmarks()<CR>
 
+function! CopyCWD()
+    if IsNerdTreeEnabled() == 1 && IsNerdTreeCurrentBuffer() == 1
+        norm yy
+        if !isdirectory(getreg("0"))
+          let @+= substitute(getreg("0"),'\(^.*\)\/[^\/]*$', '\1', 'i')
+        else
+          let @+=getreg("0")
+        endif
+    else
+        let @+=expand("%:p:h")
+    endif
+endfunction
+
+command! CopyCWD call CopyCWD()
+
+
 " --------------------------------------------------
 
 " LATEX PREVIEW / LLP-------------------
@@ -614,6 +709,7 @@ nnoremap B :call GotoBookmarks()<CR>
 " nnoremap <Leader>fix :ALEFix<CR>
 " ----------------------------------------
 " COC AUTOCOMPLETE COMPLETION COC-SETTINGS LANGUAGESERVERS COC SETTINGS
+" COC-PLUGINS COC PLUGINS
 
 " Language servers (install using, for example, :CocInstall coc-css)
 " coc-snippets
@@ -625,6 +721,8 @@ nnoremap B :call GotoBookmarks()<CR>
 " coc-svelte
 " coc-clangd
 " coc-json
+"
+let g:coc_disable_startup_warning = 1
 
 " Map alt j and alt k to up and down in the autocomplete popup (if the
 " autocomplete popup is open), otherwise just leave them the same
@@ -681,6 +779,7 @@ endfunction
 
 " GoTo code navigation (COC)
 nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> <Leader>gd :split<CR><A-j><Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
@@ -750,6 +849,14 @@ set matchpairs+=<:>
 " matchpairs
 " au FileType vim,html let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
 
+" key bindings for avoiding delimitmate
+inoremap <A-[> [
+inoremap <A-]> ]
+inoremap <A-(> (
+inoremap <A-)> )
+inoremap <A-"> "
+inoremap <A-'> '
+
 " PYTHON JUPYTER JUPYTER-VIM -------------------------------------------------
 let g:jupyter_mapkeys = 0
 
@@ -778,10 +885,90 @@ let g:NERDAltDelims_cpp = 1
 " CSS COLORIZER
 let g:colorizer_fgcontrast = 0
 
+" GO SHIT FOR vim-go --------------------------------------------------------
+let g:go_fmt_command = "goimports"    " Run goimports along gofmt on each save     
+let g:go_auto_type_info = 1           " Automatically get signature/type info for object under cursor     
+let g:go_fmt_autosave = 0             " autoformat on save
+
+" --------------------------NERDCOMMENTER SET UP svelte, vue.js, html
+
+" svelte-vim vim-svelte setup indent shit
+let g:svelte_indent_script = 1
+let g:vim_svelte_plugin_load_full_syntax = 1
+
+
+if !exists('g:context_filetype#same_filetypes')
+  let g:context_filetype#filetypes = {}
+endif
+let g:context_filetype#filetypes.svelte =
+\ [
+\   {'filetype' : 'javascript', 'start' : '<script>', 'end' : '</script>'},
+\   {
+\     'filetype': 'typescript',
+\     'start': '<script\%( [^>]*\)\? \%(ts\|lang="\%(ts\|typescript\)"\)\%( [^>]*\)\?>',
+\     'end': '</script>',
+\   },
+\   {'filetype' : 'css', 'start' : '<style \?.*>', 'end' : '</style>'},
+\ ]
+
+let g:ft = ''
+fu! NERDCommenter_before()
+  if (&ft == 'html') || (&ft == 'svelte') || (&ft == 'vue')
+    let g:ft = &ft
+    let cfts = context_filetype#get_filetypes()
+    if len(cfts) > 0
+      if cfts[0] == 'svelte'
+        let cft = 'html'
+      elseif cfts[0] == 'scss'
+        let cft = 'css'
+      else
+        let cft = cfts[0]
+      endif
+      exe 'setf ' . cft
+    endif
+  endif
+endfu
+fu! NERDCommenter_after()
+  if (g:ft == 'html') || (g:ft == 'svelte') || (g:ft == 'vue')
+    exec 'setf ' . g:ft
+    let g:ft = ''
+  endif
+endfu
+
+
 " END PLUGIN SHIT -----------------------------------------------
 
 " ---------------------------------------------------------------------------------
 " LONG ASS SCRIPTS AND SHIT
+"
+" SVELTE+SCSS COMPONENT CREATOR---------------------------------------------------
+
+command! -nargs=1 SvNew call SvNew(<q-args>)
+function! SvNew( ... )
+  if !IsNerdTreeCurrentBuffer()
+    echo "Must be in nerdtree!"
+    return
+  endif
+  " create directory
+  exe "normal ma" . a:1 . "/"
+  " create svelte file in that dir
+  exe "normal ma" . a:1 . ".svelte"
+  " create scss file in that dir
+  exe "normal ma" . a:1 . ".scss"
+  " open directory in new tab
+  exe "normal /" . a:1 . "t"
+  " open svelte file
+  exe "normal 2j"
+
+  let svelteContent = ["<script>",
+      \"  import Xyz from '../Xyz.svelte'",
+      \"</script>",
+      \"<style src='" . a:1 . ".scss" . "'></style>"]
+  call append(line('$'), svelteContent)
+
+  " delete empty line @ top of file
+  normal ggdd
+endfunction
 
 " How to make stuff ACTUALLY silent (this is not needed for GUI vim but I only
 " use that in windows, so I need this for linux.
@@ -792,8 +979,7 @@ command! -nargs=1 Silent
 " LINE NUMBERING RELATED ---------------------------------------
 " Fix relative numbers for nerdtree
 function! NoRelNumIfNerdTree()
-    let isNERDTreeBuffer = (bufname("%") =~ "NERD_Tree_")?1:0
-    if isNERDTreeBuffer
+    if IsNerdTreeCurrentBuffer()
         "no line numbers in nerdtree
         set norelativenumber
     endif
@@ -807,6 +993,25 @@ augroup numbertoggle
 	autocmd BufEnter,FocusGained,InsertLeave * call NoRelNumIfNerdTree()
 	autocmd BufLeave,FocusLost,InsertEnter * set norelativenumber
 augroup END
+
+" fill rest of line with characters
+function! FillLine( str )
+    " set tw to the desired total length
+    let tw = &textwidth
+    if tw==0 | let tw = 80 | endif
+    " strip trailing spaces first
+    .s/[[:space:]]*$//
+    " calculate total number of 'str's to insert
+    let reps = (tw - col("$")) / len(a:str)
+    " insert them, if there's room, removing trailing spaces (though forcing
+    " there to be one)
+    if reps > 0
+        .s/$/\=(' '.repeat(a:str, reps))/
+    endif
+endfunction
+
+" use f12 to fill hyphens up to col 80
+map <F12> $:call FillLine('-')<CR>
 
 " Override g; so that if we are already at the most recent edit, we hit g;
 " again. to go to the actual last edit that wasn't where we currently are
@@ -831,6 +1036,20 @@ function! OverrideGotoLastEdit()
         endtry
     endif
 endfunction
+
+" Display tabs as green, spaces as white
+function! ToggleWhitespace()
+  if &filetype == 'whitespace'
+    exe "setlocal ft=" . b:oldft
+  else
+    let b:oldft = &filetype
+    setlocal ft=whitespace
+  endif
+endfunction
+  
+command! ToggleWhitespace :call ToggleWhitespace()
+command! TW :call ToggleWhitespace()
+
 
 " Super useful function that swaps the position of the last two windows
 " well technically it swaps the buffers contained in the last two windows
@@ -932,14 +1151,15 @@ endif
 
 " Indentation settings for using hard tabs for indent. Display tabs as
 " four characters wide.
-set shiftwidth=4
-set expandtab "tab key becomes {shiftwidth} spaces
-set smartindent
+" set shiftwidth=2
+" set expandtab "tab key becomes {shiftwidth} spaces
+" set smartindent
 "  'ts' : number of spaces that <Tab> in file uses (tabstop)
 "  'sw'	: number of spaces to use for (auto)indent step (shiftwidth)
 
 " SCSS SASS SYNTAX HIGHLIGHTING ----------------------
-" au! BufRead,BufNewFile *.scss setfiletype scss
+au! BufRead,BufNewFile *.scss setfiletype scss
+autocmd FileType scss setl iskeyword+=@-@
 
 filetype plugin on
-
+exe "set ft=" . &filetype

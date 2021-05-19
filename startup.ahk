@@ -84,8 +84,19 @@ Capslock & Esc::SendRaw ``
 Capslock & `;::Send {end}
 Capslock & g::Send {home}
 
+<<<<<<< HEAD
 Capslock & d::Send {delete}
 Alt & d::Send https://discord.gg/7WQwrtkA
+=======
+Capslock & d::
+    if(GetKeyState("Control", "P"))
+    {
+        SetCapsLockState, AlwaysOff
+        return
+    }
+    Send {delete}
+    return
+>>>>>>> 733d518bcc2d5e37e8a50b15066d85e91ad3b581
 
 Capslock & h::
     shift := false
@@ -225,12 +236,35 @@ f20 := false
 <^k::
     if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
     {
-        Send ^k
+        Send ^k ; create link
         Send +{Tab}
         Send +{Tab}
         Send +{Tab}
         Send ^v
         Send +{Tab}
+    }
+return
+
+<^+k::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
+        sleep 700
+        Send {Alt down}{Home}{Alt up} ; switch to first pg
+    }
+return
+
+<^+c::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
+    }
+return
+
+<^h::
+    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
+    {
+        Send {Alt down}{Home}{Alt up} ; switch to first pg
     }
 return
 
@@ -309,13 +343,17 @@ return
 ; Use mouse4 to hold ctrl for swapping screens
 ; XButton2::LCtrl
 
-CapsLock & r::
+CapsLock & r:: ; Reload script
     ; reload
     Run, "C:\Users\%A_Username%\.config\nvim\startup.ahk"
     ; this lower version doesnt work bc no matter what I try the unicode doesnt work ie AHK launches in ANSI mode
     ; even if I run AutoHotkey_U32.exe...
     ; Run, C:\Program Files\AutoHotkey\AutoHotkey.exe "C:\Users\%A_Username%\.config\nvim\startup.ahk"
     Sleep 300
+    while(GetKeyState("r", "P"))
+    {
+        sleep 50
+    }
     Send {Enter}
     return
     

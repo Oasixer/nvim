@@ -1,1 +1,1 @@
-setlocal ts=2 sw=2 expandtab smartindent
+setlocal ts=2 sw=2 noexpandtab smartindent
