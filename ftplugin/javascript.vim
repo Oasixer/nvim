@@ -10,7 +10,7 @@ iabbrev <buffer> foreach2 forEach(function (i, n) {<CR><CR>});<Esc>k
 iabbrev <buffer> forin for (const property in object) {<CR>console.log(`${property}: ${object[property]}`);<CR>}
 iabbrev <buffer> forin2 for (const property in <Esc>pa) {<CR>console.log(`${property}: ${<Esc>pa[property]}`);<CR>}
 
-setlocal ts=2 sw=2 expandtab smartindent
+setlocal ts=2 sw=2 noexpandtab smartindent
 
 let b:ale_fixers = ['eslint', 'prettier']
 let b:ale_linters = ['eslint']
