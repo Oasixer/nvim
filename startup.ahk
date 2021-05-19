@@ -84,10 +84,7 @@ Capslock & Esc::SendRaw ``
 Capslock & `;::Send {end}
 Capslock & g::Send {home}
 
-<<<<<<< HEAD
-Capslock & d::Send {delete}
 Alt & d::Send https://discord.gg/7WQwrtkA
-=======
 Capslock & d::
     if(GetKeyState("Control", "P"))
     {
@@ -96,7 +93,6 @@ Capslock & d::
     }
     Send {delete}
     return
->>>>>>> 733d518bcc2d5e37e8a50b15066d85e91ad3b581
 
 Capslock & h::
     shift := false
