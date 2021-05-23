@@ -970,6 +970,33 @@ function! SvNew( ... )
   normal ggdd
 endfunction
 
+" python print helper
+" -nargs=? is for 0 to 1 arg
+command! -nargs=? PP call PythonPrint(<f-args>)
+function! PythonPrint( ... )
+  echo a:0
+  if a:0 > 0
+    let b:var = a:1
+  else
+    let b:var = getreg("0")
+  endif
+  let content = "print(f'" . b:var . ": {" . b:var . "}')"
+  call append(line('.'), content)
+endfunction
+
+" python print helper (w/ type)
+" -nargs=? is for 0 to 1 arg
+command! -nargs=? PPT call PythonPrintType(<f-args>)
+function! PythonPrintType( ... )
+  echo a:0
+  if a:0 > 0
+    let b:var = a:1
+  else
+    let b:var = getreg("0")
+  endif
+  let content = "print(f'" . b:var . ": {" . b:var . "}, type: {type(". b:var .")}')"
+  call append(line('.'), content)
+endfunction
 " How to make stuff ACTUALLY silent (this is not needed for GUI vim but I only
 " use that in windows, so I need this for linux.
 command! -nargs=1 Silent

@@ -352,7 +352,42 @@ CapsLock & r:: ; Reload script
     }
     Send {Enter}
     return
-    
+
+#IfWinActive, ahk_exe chrome.exe  ;;chrome generic
+    <!p::
+        prevClip := Clipboard
+        WinGet, active_id, ID, A
+
+        name =
+        winTitle := "Input Symbol"
+        winPrompt := "Input Symbol"
+        width =
+        height =
+        x =
+        y =
+        locale =
+        timeout =
+        InputBox, name, %winTitle%, %winPrompt%, , %width%, %height%, %x%, %y%, %locale%, %timeout%
+
+        WinActivate, ahk_id %active_id%
+        Clipboard= % Format("print(f'{{}type({1}){}} {1}: {{}{1}{}}')", name)
+        Send, ^v
+    return
+#IfWinActive 
+
+; a:=Clipboard, Clipboard="I see genie"   ;save your current clipboard to a variable and set the clipboard to text
+; Send, ^v    ;paste
+; Clipboard:=a    ;restore original clipboard
+; Return
+
+; ^+1::Send, I see genie
+
+; <!+p::
+    ; orig_clip := Clipboard
+        ; If InStr(orig_clip, " ")
+
+        ; Else
+            ; MsgBox, The string was not found.
 
 CapsLock & s:: ;symbol insertion!
     name =
