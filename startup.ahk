@@ -84,16 +84,6 @@ Capslock & Esc::SendRaw ``
 Capslock & `;::Send {end}
 Capslock & g::Send {home}
 
-Alt & d::Send https://discord.gg/7WQwrtkA
-Capslock & d::
-    if(GetKeyState("Control", "P"))
-    {
-        SetCapsLockState, AlwaysOff
-        return
-    }
-    Send {delete}
-    return
-
 Capslock & h::
     shift := false
     alt := false
@@ -276,10 +266,10 @@ return
 
         MouseGetPos, StartX, StartY
         ; MouseMove, 128, 397 
-        Click, 128, 397 ; location or bottom right in desktop mode and top left in tablet mode
+        ; Click, 128, 397 ; location or bottom right in desktop mode and top left in tablet mode
         ; Click, 175, 425 ; location for dead center in tablet mode
-        MouseMove, StartX, StartY
-        ; Send ^z
+        ; MouseMove, StartX, StartY
+        Send ^z
     }
 return
 
