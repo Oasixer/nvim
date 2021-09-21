@@ -60,6 +60,9 @@ Plug 'itchyny/vim-gitbranch'
 "camelCase and snake_case motion for words
 Plug 'chaoren/vim-wordmotion'
 
+" easymotion, nuff said
+Plug 'easymotion/vim-easymotion'
+
 " highlight current word and all occurances of it
 " (useful for predicting wordmotion and shit)
 Plug 'dominikduda/vim_current_word'
@@ -82,6 +85,14 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "Switch between header and implementation for cpp/c
 Plug 'derekwyatt/vim-fswitch' 
+
+" Syntax highlighting for kitty.conf (terminal config for kitty)
+Plug 'fladson/vim-kitty'
+
+" Passthrough vim window navigation to kitty terminal
+"   note the {} part is to copy some python scripts into .config/kitty for
+"   keybinds
+Plug 'knubie/vim-kitty-navigator', {'do': 'cp ./*.py ~/.config/kitty/'}
 
 "bunch of snippets
 Plug 'honza/vim-snippets'
@@ -119,6 +130,9 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' } "ryan
 
 " Jupyter
 " Plug 'jupyter-vim/jupyter-vim'
+
+" Kotlin
+Plug 'udalov/kotlin-vim'
 
 " TODOS
 "Plug 'aserebryakov/vim-todo-lists'
@@ -280,18 +294,25 @@ nno <leader>zv mazMzv`a
 
 " WINDOW / WINDOWS MANAGEMENT/MOVEMENT STUFF ----------------
 "Use `ALT+{h,j,k,l}` to navigate windows from any mode: >
-tnoremap <A-h> <C-\><C-N><C-w>h
-tnoremap <A-j> <C-\><C-N><C-w>j
-tnoremap <A-k> <C-\><C-N><C-w>k
-tnoremap <A-l> <C-\><C-N><C-w>l
-inoremap <A-h> <C-\><C-N><C-w>h
-inoremap <A-j> <C-\><C-N><C-w>j
-inoremap <A-k> <C-\><C-N><C-w>k
-inoremap <A-l> <C-\><C-N><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+" tnoremap <A-h> <C-\><C-N><C-w>h
+" tnoremap <A-j> <C-\><C-N><C-w>j
+" tnoremap <A-k> <C-\><C-N><C-w>k
+" tnoremap <A-l> <C-\><C-N><C-w>l
+" inoremap <A-h> <C-\><C-N><C-w>h
+" inoremap <A-j> <C-\><C-N><C-w>j
+" inoremap <A-k> <C-\><C-N><C-w>k
+" inoremap <A-l> <C-\><C-N><C-w>l
+" nnoremap <A-h> <C-w>h
+" nnoremap <A-j> <C-w>j
+" nnoremap <A-k> <C-w>k
+" nnoremap <A-l> <C-w>l
+
+let g:kitty_navigator_no_mappings = 1
+
+nnoremap <silent> <C-h> :KittyNavigateLeft<cr>
+nnoremap <silent> <C-j> :KittyNavigateDown<cr>
+nnoremap <silent> <C-k> :KittyNavigateUp<cr>
+nnoremap <silent> <C-l> :KittyNavigateRight<cr>
 
 function! MoveWindow(...)
     let wasOpen = 0
@@ -557,6 +578,9 @@ command! RL source ~/.config/nvim/init.vim
 "
 
 "PLUGIN SHIT--------------------------------------------------------------------------
+" makes easymotion global searches work w/ smartcase
+let g:EasyMotion_smartcase = 1
+
 " CURRENT WORD CURRENTWORD
 " highlight twins of current word
 let g:vim_current_word#highlight_twins = 1
@@ -582,11 +606,11 @@ hi CurrentWordTwins guibg=#202060
 "FZF
 
 nnoremap <silent> <C-g> :ProjectRootExe Ag<cr>
-nnoremap <silent> <C-h> :cd %:p:h<cr>:Gr<cr>
+" nnoremap <silent> <C-h> :cd %:p:h<cr>:Gr<cr>
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 command! -bang -nargs=* Gr call fzf#vim#grep(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 " nnoremap <leader>rc :ProjectRootCD<cr>
-" nnoremap <silent> <C-f> :ProjectRootExe Files<CR>
+" nnoremap <silent> <c-s-h> :ProjectRootExe Files<CR>
 nnoremap <silent> <C-f> :ProjectRootExe GFiles<CR>
 " nnoremap <silent> <C-g>g :ProjectRootExe GGrep<CR>
 " nnoremap <silent> <C-S-a> :ProjectRootExe Ag<CR>
@@ -640,7 +664,21 @@ let NERDTreeShowHidden=1
 let NERDTreeShowLineNumbers=0
 
 "nerd tree toggle
-noremap <C-n> :NERDTreeToggle<CR>
+noremap <silent> <C-n> :NERDTreeToggle<CR>
+
+" nerd tree focus
+noremap <silent> <A-1> :call NerdTreeFocus()<CR>
+    
+function! NerdTreeFocus()
+    if IsNerdTreeEnabled()
+        if IsNerdTreeCurrentBuffer() == 0
+            norm 15h 
+        endif
+    else
+        echo "nerdtree closed"
+        exe "NERDTreeToggle"
+    endif
+endfunction
 
 " open Nerd Tree in folder of file in active buffer
 map <Leader>ncd :NERDTree %:p:h<CR>
@@ -669,8 +707,8 @@ endfunction
 
 " Super janky way of defining this mapping but I couldnt get stupid wordmotion
 " to stop overwriting this mapping
-autocmd VimEnter * :nnoremap B :call GotoBookmarks()<CR>
-nnoremap B :call GotoBookmarks()<CR>
+autocmd VimEnter * :nnoremap <silent> B :call GotoBookmarks()<CR>
+nnoremap <silent> B :call GotoBookmarks()<CR>
 
 function! CopyCWD()
     if IsNerdTreeEnabled() == 1 && IsNerdTreeCurrentBuffer() == 1
@@ -726,15 +764,16 @@ let g:coc_disable_startup_warning = 1
 
 " Map alt j and alt k to up and down in the autocomplete popup (if the
 " autocomplete popup is open), otherwise just leave them the same
-inoremap <expr> <A-j> pumvisible() ? "\<C-n>" : "\<A-j>"
-inoremap <expr> <A-k> pumvisible() ? "\<C-p>" : "\<A-k>"
+" inoremap <expr> <A-j> pumvisible() ? "\<C-n>" : "\<A-j>"
+" inoremap <expr> <A-k> pumvisible() ? "\<C-p>" : "\<A-k>"
+" EDIT ^^^ NEVERMIND, JUST USE ARROW KEYS NOW
 
 " Map tab to confirm the selected completion if the autocomplete menu is open,
 " otherwise just leave it as tab
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<Tab>"
 
 " Map Alt+l to confirm the selected completion if the autocomplete menu is open,
-inoremap <silent><expr> <A-l> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<A-l>"
+" inoremap <silent><expr> <A-l> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<A-l>"
 
 " Coc Restart
 command! CRL CocRestart
