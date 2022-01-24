@@ -3,6 +3,7 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+SetNumLockState, AlwaysOn
 
 mode := "n"
 
@@ -34,7 +35,6 @@ mode := "n"
 ; Useful shortcuts: http://aalapshah.in/qipress
 SetCapsLockState, AlwaysOff
 SetScrollLockState, AlwaysOff
-SetNumLockState, AlwaysOff
 
 ; more info on options: https://www.autohotkey.com/docs/commands/InputHook.htm
 ; Use the option "V" for nonblocking!
@@ -83,6 +83,15 @@ Rshift & Backspace::Send {Delete}
 Capslock & Esc::SendRaw ``
 Capslock & `;::Send {end}
 Capslock & g::Send {home}
+
+Capslock & d::
+    if(GetKeyState("Control", "P"))
+    {
+        SetCapsLockState, AlwaysOff
+        return
+    }
+    Send {delete}
+    return
 
 Capslock & h::
     shift := false
@@ -204,6 +213,53 @@ Capslock & l::
         Send {RControl Up}
 return
 
+; EXCEL SHORTCUTS
+<!1:: ; alt+1 toggles subscript
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+        Send {LControl Down}1{LControl Up}
+        sleep 200
+        Send {Alt Down}b{Alt Up}
+        sleep 100
+        Send {Enter}
+    }
+return
+
+<!2:: ; alt+2 toggles superscript
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+        Send {LControl Down}1{LControl Up}
+        sleep 200
+        Send {Alt Down}e{Alt Up}
+        sleep 100
+        Send {Enter}
+    }
+return
+
+CapsLock & v:: ; CapsLock & v pastes format only
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+        Send {LControl Down}{Alt Down}v{Alt Up}{LControl Up}
+        sleep 10
+        Send t
+        sleep 10
+        Send {Enter}
+    }
+return
+
+CapsLock & m:: ; CapsLock & m merges cells
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+            if(GetKeyState("Shift", "P"))
+            {
+                Send {Alt Down}hmu{Alt Up}
+            }
+            else
+            {
+                Send {Alt Down}hmm{Alt Up}
+            }
+    }
+return
 
 ; SURFACE PEN
 ; Pressing the eraser button of the Surface Pen sends a hotkey combination of Windows Key + F18/19/20 Function Key, 
@@ -219,40 +275,41 @@ f18 := false
 f19 := false
 f20 := false
 
+#IfWinActive, ahk_exe onenote.exe  ;;onenote generic
 <^k::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send ^k ; create link
         Send +{Tab}
         Send +{Tab}
         Send +{Tab}
         Send ^v
         Send +{Tab}
-    }
 return
 
 <^+k::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
         sleep 700
         Send {Alt down}{Home}{Alt up} ; switch to first pg
-    }
 return
 
+
 <^+c::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
-    }
 return
 
 <^h::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send {Alt down}{Home}{Alt up} ; switch to first pg
-    }
 return
+
+<^g::
+    Send ^c
+    sleep 300
+    ; Send {backspace}
+    clip := Clipboard
+    RunWait python.exe C:\Users\Kaelan\Documents\code\hex_to_rgb_and_ratios.py --hex="%clip%"
+    sleep 300
+    Send ^v ; paste shit
+    return
+#IfWinActive
 
 
 <#F20::
@@ -759,6 +816,3 @@ Capslock & p::
         ; mode := "n"
 
     ; return
-    
-
-
