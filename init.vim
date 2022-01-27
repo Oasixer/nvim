@@ -563,15 +563,15 @@ command! Init e ~/.config/nvim/init.vim
 command! Tinit tabe ~/.config/nvim/init.vim
 command! Hinit split ~/.config/nvim/init.vim
 
-command! Vnotes vsplit ~/Documents/notes
-command! Notes e ~/Documents/notes
-command! Tnotes tabe ~/Documents/notes
-command! Hnotes split ~/Documents/notes
+command! Vnotes vsplit ~/notes
+command! Notes e ~/notes
+command! Tnotes tabe ~/notes
+command! Hnotes split ~/notes
 
-command! Vgit vsplit ~/Documents/notes/git.md
-command! Ngit e ~/Documents/notes/git.md
-command! Tgit tabe ~/Documents/notes/git.md
-command! Hgit split ~/Documents/notes/git.md
+command! Vgit vsplit ~/notes/git.md
+command! Ngit e ~/notes/git.md
+command! Tgit tabe ~/notes/git.md
+command! Hgit split ~/notes/git.md
 
 " RELOAD init.vim 
 command! RL source ~/.config/nvim/init.vim
