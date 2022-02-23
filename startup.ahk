@@ -3,6 +3,7 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+SetNumLockState, AlwaysOn
 
 mode := "n"
 
@@ -28,13 +29,11 @@ mode := "n"
 
 ; Syntax that i forget often
 ; MsgBox hi
-; ~^1:: ; the ~ symbol causes this hotkey to not block the native function of ~^1 which is blocked by default
 
 
 ; Useful shortcuts: http://aalapshah.in/qipress
 SetCapsLockState, AlwaysOff
 SetScrollLockState, AlwaysOff
-SetNumLockState, AlwaysOff
 
 ; more info on options: https://www.autohotkey.com/docs/commands/InputHook.htm
 ; Use the option "V" for nonblocking!
@@ -59,6 +58,26 @@ KeyWaitCombo(Options:="")
     return ih.EndMods . ih.EndKey  ; Return a string like <^<+Esc
 }
 
+; KEYS-------------------------------------------------------
+; # windows button
+; ! alt
+; ^ ctrl
+; + shift
+; & combine keys
+; < left key of pair
+; > right key of pair
+; * fire modifier even if additional keys are held
+; ~ dont block firing the key for other native funcs
+; $ don't allow ahk to trigger this with fake keypresses (ie. if you bind ctrl+c to do some stuff then SendKeys ctrl+c and dont want infinite loop)
+
+#IfWinActive MINGW64
+{
+    ^+v::
+        SendInput +{Insert}
+        Return
+}
+#IfWinActive 
+
 ; #+s::#+s
 #+1::Send #+{Left}
 #+2::Send #+{Right}
@@ -75,6 +94,10 @@ Capslock & 9::F9
 Capslock & 0::F10
 Capslock & -::F11
 Capslock & =::F12
+
+; git bash ctrl+shift+v
+
+
 ; screenshot
 ; Capslock & s::^!p
 Capslock & Backspace::Delete
@@ -83,6 +106,15 @@ Rshift & Backspace::Send {Delete}
 Capslock & Esc::SendRaw ``
 Capslock & `;::Send {end}
 Capslock & g::Send {home}
+
+Capslock & d::
+    if(GetKeyState("Control", "P"))
+    {
+        SetCapsLockState, AlwaysOff
+        return
+    }
+    Send {delete}
+    return
 
 Capslock & h::
     shift := false
@@ -204,6 +236,53 @@ Capslock & l::
         Send {RControl Up}
 return
 
+; EXCEL SHORTCUTS
+<!1:: ; alt+1 toggles subscript
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+        Send {LControl Down}1{LControl Up}
+        sleep 200
+        Send {Alt Down}b{Alt Up}
+        sleep 100
+        Send {Enter}
+    }
+return
+
+<!2:: ; alt+2 toggles superscript
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+        Send {LControl Down}1{LControl Up}
+        sleep 200
+        Send {Alt Down}e{Alt Up}
+        sleep 100
+        Send {Enter}
+    }
+return
+
+CapsLock & v:: ; CapsLock & v pastes format only
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+        Send {LControl Down}{Alt Down}v{Alt Up}{LControl Up}
+        sleep 10
+        Send t
+        sleep 10
+        Send {Enter}
+    }
+return
+
+CapsLock & m:: ; CapsLock & m merges cells
+    if WinActive("ahk_class Framework::CFrame ahk_class XLMAIN")
+    {
+            if(GetKeyState("Shift", "P"))
+            {
+                Send {Alt Down}hmu{Alt Up}
+            }
+            else
+            {
+                Send {Alt Down}hmm{Alt Up}
+            }
+    }
+return
 
 ; SURFACE PEN
 ; Pressing the eraser button of the Surface Pen sends a hotkey combination of Windows Key + F18/19/20 Function Key, 
@@ -219,40 +298,41 @@ f18 := false
 f19 := false
 f20 := false
 
+#IfWinActive, ahk_exe onenote.exe  ;;onenote generic
 <^k::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send ^k ; create link
         Send +{Tab}
         Send +{Tab}
         Send +{Tab}
         Send ^v
         Send +{Tab}
-    }
 return
 
 <^+k::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
         sleep 700
         Send {Alt down}{Home}{Alt up} ; switch to first pg
-    }
 return
 
+
 <^+c::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
-    }
 return
 
 <^h::
-    if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
-    {
         Send {Alt down}{Home}{Alt up} ; switch to first pg
-    }
 return
+
+<^g::
+    Send ^c
+    sleep 300
+    ; Send {backspace}
+    clip := Clipboard
+    RunWait python.exe C:\Users\Kaelan\Documents\code\hex_to_rgb_and_ratios.py --hex="%clip%"
+    sleep 300
+    Send ^v ; paste shit
+    return
+#IfWinActive
 
 
 <#F20::
@@ -264,12 +344,13 @@ return
     if WinActive("ahk_class Framework::CFrame ahk_exe onenote.exe")
     {
 
-        MouseGetPos, StartX, StartY
-        ; MouseMove, 128, 397 
+        ; MouseGetPos, StartX, StartY
+        ; MsgBox, %StartX% %StartY%
         ; Click, 128, 397 ; location or bottom right in desktop mode and top left in tablet mode
         ; Click, 175, 425 ; location for dead center in tablet mode
+        ; Click, 117, 321 ; location for dead center after changing ui scale i think
         ; MouseMove, StartX, StartY
-        Send ^z
+        Send {Ctrl down}z{Ctrl up} ; switch to first pg
     }
 return
 
@@ -343,6 +424,21 @@ CapsLock & r:: ; Reload script
     Send {Enter}
     return
 
+#IfWinActive, ahk_exe nvim-qt.exe  ;;nvim generic
+        <^h::
+                Send {LCtrl down}w{LCtrl up}h
+                return
+        <^l::
+                Send {LCtrl down}w{LCtrl up}l
+                return
+        <^k::
+                Send {LCtrl down}w{LCtrl up}k
+                return
+        <^j::
+                Send {LCtrl down}w{LCtrl up}j
+                return
+#IfWinActive 
+
 #IfWinActive, ahk_exe chrome.exe  ;;chrome generic
     <!p::
         prevClip := Clipboard
@@ -363,6 +459,146 @@ CapsLock & r:: ; Reload script
         Clipboard= % Format("print(f'{{}type({1}){}} {1}: {{}{1}{}}')", name)
         Send, ^v
     return
+
+        LCtrl & o::
+            Send ^l
+                sleep 50
+            Send {RShift Down}
+                sleep 50
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Tab}
+                sleep 50
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Tab}
+                sleep 50
+            Send {Tab}
+                sleep 50
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {RShift Up}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Enter} ; open print
+                sleep 3300
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {RShift Down}
+                sleep 50
+            Send {Tab}
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {RShift Up}
+                sleep 100
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+                Send {Enter} ; MORE SETTINGS
+                sleep 200 ;200
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Tab}
+                sleep 50
+            Send {Tab} ; highlights margins
+                sleep 50
+                Send {Enter}
+                sleep 150
+                Send {Up}
+                sleep 50
+                Send {Up}
+                sleep 50
+                Send {Up}
+                sleep 50
+                Send {Down}
+                sleep 50
+                Send {Enter} ; SET NO MARGINS
+                sleep 100
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Tab}
+                sleep 50
+            Send {Tab}
+                sleep 50
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Tab}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Enter}
+                sleep 500
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+        Click, 80, 60 ; location or bottom right in desktop mode and top left in tablet mode
+                sleep 100
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+                Send {LAlt down}r{LAlt up}
+                sleep 300
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+                Send {Down}
+                sleep 50
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+                Send {Down}
+                sleep 100
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Enter}
+                sleep 100
+            if(GetKeyState("Esc", "P"))
+            {
+                return
+            }
+            Send {Enter}
+                sleep 100
+        return
 #IfWinActive 
 
 ; a:=Clipboard, Clipboard="I see genie"   ;save your current clipboard to a variable and set the clipboard to text
@@ -732,9 +968,13 @@ CapsLock & s:: ;symbol insertion!
 ; run thingiverse extractor script
 Capslock & t::
     run, python.exe C:\Users\Kaelan\Documents\code\thingiverse_downloader\thingiverse_downloader.py
+    return
 
 Capslock & p::
     run, python.exe C:\Users\Kaelan\Documents\code\prusaslicer_config_fixer\script.py
+    return
+
+
 
 ; mode switching
 ; CapsLock & m::
@@ -759,6 +999,3 @@ Capslock & p::
         ; mode := "n"
 
     ; return
-    
-
-

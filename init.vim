@@ -159,7 +159,6 @@ call plug#end()
 
 " ------------------------------------------------------------
 
-
 " SETTINGS/OPTIONS ------------------------------------------------------------
 let mapleader = " "
 syntax on
@@ -261,6 +260,7 @@ if (empty($TMUX))
   endif
 endif
 
+
 let g:go_version_warning = 0
 
 " Distinguish <C-i> from <Tab>
@@ -308,11 +308,6 @@ nno <leader>zv mazMzv`a
 " nnoremap <A-l> <C-w>l
 
 let g:kitty_navigator_no_mappings = 1
-
-nnoremap <silent> <C-h> :KittyNavigateLeft<cr>
-nnoremap <silent> <C-j> :KittyNavigateDown<cr>
-nnoremap <silent> <C-k> :KittyNavigateUp<cr>
-nnoremap <silent> <C-l> :KittyNavigateRight<cr>
 
 function! MoveWindow(...)
     let wasOpen = 0
@@ -608,7 +603,7 @@ hi CurrentWordTwins guibg=#202060
 nnoremap <silent> <C-g> :ProjectRootExe Ag<cr>
 " nnoremap <silent> <C-h> :cd %:p:h<cr>:Gr<cr>
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
-command! -bang -nargs=* Gr call fzf#vim#grep(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+" command! -bang -nargs=* Gr call fzf#vim#grep(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 " nnoremap <leader>rc :ProjectRootCD<cr>
 " nnoremap <silent> <c-s-h> :ProjectRootExe Files<CR>
 nnoremap <silent> <C-f> :ProjectRootExe GFiles<CR>
@@ -1205,10 +1200,33 @@ if(has('win32'))
     silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin"
     " silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim C:\\Users\\Kaelan\\AppData\\Local\\nvim coc-settings.json"
     " command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
+    map <C-l> <C-w>l
+    map <C-h> <C-w>h
+    map <C-j> <C-w>j
+    map <C-k> <C-w>k
+
 
     " Necessary on windows in nvim-qt to make autocomplete dropdown/popupmenu not ugly
     autocmd! VimEnter * GuiPopupmenu 0
+else
+  nnoremap <silent> <C-h> :KittyNavigateLeft<cr>
+  nnoremap <silent> <C-j> :KittyNavigateDown<cr>
+  nnoremap <silent> <C-k> :KittyNavigateUp<cr>
+  nnoremap <silent> <C-l> :KittyNavigateRight<cr>
 endif
+"Use `ALT+{h,j,k,l}` to navigate windows from any mode: >
+" tnoremap <A-h> <C-\><C-N><C-w>h
+" tnoremap <A-j> <C-\><C-N><C-w>j
+" tnoremap <A-k> <C-\><C-N><C-w>k
+" tnoremap <A-l> <C-\><C-N><C-w>l
+" inoremap <A-h> <C-\><C-N><C-w>h
+" inoremap <A-j> <C-\><C-N><C-w>j
+" inoremap <A-k> <C-\><C-N><C-w>k
+" inoremap <A-l> <C-\><C-N><C-w>l
+" nnoremap <A-h> <C-w>h
+" nnoremap <A-j> <C-w>j
+" nnoremap <A-k> <C-w>k
+" nnoremap <A-l> <C-w>l
     
 
 "------------------------------------------------
