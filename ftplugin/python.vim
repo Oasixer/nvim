@@ -7,3 +7,8 @@ setlocal ts=4 sw=4 expandtab smartindent
 setlocal colorcolumn=80
 
 let b:ale_fixers = ['yapf']
+<<<<<<< HEAD
+=======
+
+nnoremap <buffer><silent> <Leader>fp :s/print(\(.*\))/\1/e<CR>^iprint(<Esc>A)<Esc>$hvi)yif'<Esc>$i: {<Esc>pa}'<Esc>
+>>>>>>> 16e6d527f95f429af34f23aecd51d664c1ca43cd
