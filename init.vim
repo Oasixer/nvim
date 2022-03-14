@@ -16,9 +16,11 @@ endif
 unlet autoload_plug_path
 let nerdtree_yank_path = stdpath('config') . '/plugged/nerdtree/nerdtree_plugin/yank_mapping.vim'
 let nerdtree_yank_custom_in_root = stdpath('config') . '/nerdtree_custom_yank_mapping.vim'
-if !filereadable(nerdtree_yank_path)
-    exe '!cp ' . nerdtree_yank_custom_in_root . ' ' . nerdtree_yank_path
-    echo filereadable(nerdtree_yank_path)
+if !(has('win32'))
+  if !filereadable(nerdtree_yank_path)
+      exe '!cp ' . nerdtree_yank_custom_in_root . ' ' . nerdtree_yank_path
+      echo filereadable(nerdtree_yank_path)
+  endif
 endif
 unlet nerdtree_yank_path
 unlet nerdtree_yank_custom_in_root
@@ -1198,6 +1200,7 @@ if(has('win32'))
     " also, copy the coc-settings file, if one exists
     " (super duper hardcoded for my current windows machine)
     silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin"
+    silent exec "!robocopy C:\\Users\\kijiji\\.config\\nvim\\ftplugin C:\\Users\\kijiji\\AppData\\Local\\nvim\\ftplugin"
     " silent exec "!robocopy C:\\Users\\Kaelan\\.config\\nvim C:\\Users\\Kaelan\\AppData\\Local\\nvim coc-settings.json"
     " command! CopyFtplugin !robocopy C:\\Users\\Kaelan\\.config\\nvim\\ftplugin C:\\Users\\Kaelan\\AppData\\Local\\nvim\\ftplugin
     map <C-l> <C-w>l
