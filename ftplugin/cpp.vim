@@ -4,6 +4,7 @@ let b:ale_fixers = ['']
 let b:ale_linters = ['']
 
 
+
 " ------------------------------------------------------------------------
 " This script is for switching between headers and implementation in c/cpp,
 " but it is much less effective than the plugin vim-fswitch so we just use

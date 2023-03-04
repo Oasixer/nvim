@@ -7,6 +7,7 @@ SetNumLockState, AlwaysOn
 
 mode := "n"
 
+
 ; disabling bullshit via regedit
 
 ; snipping tool -------------------
@@ -104,8 +105,32 @@ Capslock & Backspace::Delete
 Rshift & Backspace::Send {Delete}
 +Esc::Send ~
 Capslock & Esc::SendRaw ``
-Capslock & `;::Send {end}
-Capslock & g::Send {home}
+Capslock & `;::
+    if(GetKeyState("Shift", "P"))
+    {
+        Send {RShift Down}
+        Send {end}
+        Send {RShift Up}
+    }
+    else
+    {
+        Send {end}
+    }
+    return
+
+Capslock & g::
+    if(GetKeyState("Shift", "P"))
+    {
+        Send {RShift Down}
+        Send {home}
+        Send {RShift Up}
+    }
+    else
+    {
+        Send {home}
+    }
+    return
+
 
 Capslock & d::
     if(GetKeyState("Control", "P"))
@@ -310,8 +335,8 @@ return
 
 <^+k::
         Send {Shift Down}{F10}{Shift Up}+{p} ; copy link to paragraph
-        sleep 700
-        Send {Alt down}{Home}{Alt up} ; switch to first pg
+        ; sleep 700
+        ; Send {Alt down}{Home}{Alt up} ; switch to first pg
 return
 
 
@@ -566,7 +591,7 @@ CapsLock & r:: ; Reload script
             {
                 return
             }
-        Click, 80, 60 ; location or bottom right in desktop mode and top left in tablet mode
+        Click, 80, 60 ;
                 sleep 100
             if(GetKeyState("Esc", "P"))
             {
@@ -586,18 +611,18 @@ CapsLock & r:: ; Reload script
             }
                 Send {Down}
                 sleep 100
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Enter}
-                sleep 100
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Enter}
-                sleep 100
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Enter}
+                ; sleep 100
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Enter}
+                ; sleep 100
         return
 #IfWinActive 
 
