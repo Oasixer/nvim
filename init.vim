@@ -443,6 +443,19 @@ nnoremap <silent> <Leader>) :tabm<CR>
 nnoremap <silent> <Esc> :noh<CR>
 
 " YANK, PASTE, DELETE, PUT, PRINT RELATED ---------------------------------------------
+
+
+" delete goes into the unnamed register.
+" p by default pastes the unnamed register which is an annoying combo.
+"
+" rebind p to paste from the 0 register instead.
+"ehhhhhhhhhhh idk if i want to commit to this tho
+" noremap p "0p
+" noremap P "0P
+" for s:i in ['"','*','+','-','.',':','%','/','=','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+    " execute 'noremap "'.s:i.'p "'.s:i.'p'
+    " execute 'noremap "'.s:i.'P "'.s:i.'P'
+" endfor
  
 " Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
 " which is the default
