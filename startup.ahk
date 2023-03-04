@@ -96,8 +96,10 @@ Capslock & 0::F10
 Capslock & -::F11
 Capslock & =::F12
 
-; git bash ctrl+shift+v
+; git up ctrl+shift+v
 
+Capslock & s::Send {Backspace}
+Capslock & d::Send {Delete}
 
 ; screenshot
 ; Capslock & s::^!p
@@ -132,14 +134,14 @@ Capslock & g::
     return
 
 
-Capslock & d::
-    if(GetKeyState("Control", "P"))
-    {
-        SetCapsLockState, AlwaysOff
-        return
-    }
-    Send {delete}
-    return
+; Capslock & d::
+    ; if(GetKeyState("Control", "P"))
+    ; {
+        ; SetCapsLockState, AlwaysOff
+        ; return
+    ; }
+    ; Send {delete}
+    ; return
 
 Capslock & h::
     shift := false
@@ -435,7 +437,7 @@ return
 ; Use mouse4 to hold ctrl for swapping screens
 ; XButton2::LCtrl
 
-CapsLock & r:: ; Reload script
+Alt & r:: ; Reload script
     ; reload
     Run, "C:\Users\%A_Username%\.config\nvim\startup.ahk"
     ; this lower version doesnt work bc no matter what I try the unicode doesnt work ie AHK launches in ANSI mode
@@ -463,6 +465,34 @@ CapsLock & r:: ; Reload script
                 Send {LCtrl down}w{LCtrl up}j
                 return
 #IfWinActive 
+    
+; solidworks, reload equations from file
+!+F12::
+    ; Send +e
+    Send E
+    sleep 150
+    Send {Down}
+    Send {Down}
+    Send {Enter}
+    sleep 320
+    Send eqn.txt
+    sleep 150
+    Send {Tab}
+    Send {Tab}
+    sleep 200
+    Send {Enter}
+    sleep 350
+    Send {Tab}
+    sleep 50
+    Send {Enter}
+    sleep 250
+    Send {Right}
+    sleep 50
+    Send {Enter}
+    sleep 250
+    Send {Enter}
+
+return
 
 #IfWinActive, ahk_exe chrome.exe  ;;chrome generic
     <!p::
@@ -485,137 +515,133 @@ CapsLock & r:: ; Reload script
         Send, ^v
     return
 
-        LCtrl & o::
-            Send ^l
-                sleep 50
-            Send {RShift Down}
-                sleep 50
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Tab}
-                sleep 50
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Tab}
-                sleep 50
-            Send {Tab}
-                sleep 50
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {RShift Up}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Enter} ; open print
-                sleep 3300
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {RShift Down}
-                sleep 50
-            Send {Tab}
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {RShift Up}
-                sleep 100
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-                Send {Enter} ; MORE SETTINGS
-                sleep 200 ;200
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Tab}
-                sleep 50
-            Send {Tab} ; highlights margins
-                sleep 50
-                Send {Enter}
-                sleep 150
-                Send {Up}
-                sleep 50
-                Send {Up}
-                sleep 50
-                Send {Up}
-                sleep 50
-                Send {Down}
-                sleep 50
-                Send {Enter} ; SET NO MARGINS
-                sleep 100
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Tab}
-                sleep 50
-            Send {Tab}
-                sleep 50
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Tab}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-            Send {Enter}
-                sleep 500
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-        Click, 80, 60 ;
-                sleep 100
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-                Send {LAlt down}r{LAlt up}
-                sleep 300
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-                Send {Down}
-                sleep 50
-            if(GetKeyState("Esc", "P"))
-            {
-                return
-            }
-                Send {Down}
-                sleep 100
+        ; LCtrl & o::
+
+
+            ; Send ^l
+                ; sleep 50
+            ; Send {RShift Down}
+                ; sleep 50
+            ; Send {Tab}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Tab}
+                ; sleep 50
+            ; Send {Tab}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Tab}
+                ; sleep 50
+            ; Send {Tab}
+                ; sleep 50
+            ; Send {Tab}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {RShift Up}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Enter} ; open print
+                ; sleep 3300
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {RShift Down}
+                ; sleep 50
+            ; Send {Tab}
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {RShift Up}
+                ; sleep 100
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+                ; Send {Enter} ; MORE SETTINGS
+                ; sleep 200 ;200
+            ; Send {Tab}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Tab}
+                ; sleep 50
+            ; Send {Tab} ; highlights margins
+                ; sleep 50
+                ; Send {Enter}
+                ; sleep 150
+                ; Send {Up}
+                ; sleep 50
+                ; Send {Up}
+                ; sleep 50
+                ; Send {Up}
+                ; sleep 50
+                ; Send {Down}
+                ; sleep 50
+                ; Send {Enter} ; SET NO MARGINS
+                ; sleep 100
+            ; Send {Tab}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Tab}
+                ; sleep 50
+            ; Send {Tab}
+                ; sleep 50
+            ; Send {Tab}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Tab}
+                ; sleep 50
             ; if(GetKeyState("Esc", "P"))
             ; {
                 ; return
             ; }
             ; Send {Enter}
+                ; sleep 500
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+        ; Click, 80, 60 ;
+                ; sleep 100
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+                ; Send {LAlt down}r{LAlt up}
+                ; sleep 300
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+                ; Send {Down}
+                ; sleep 50
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+                ; Send {Down}
                 ; sleep 100
             ; if(GetKeyState("Esc", "P"))
             ; {
@@ -623,7 +649,13 @@ CapsLock & r:: ; Reload script
             ; }
             ; Send {Enter}
                 ; sleep 100
-        return
+            ; if(GetKeyState("Esc", "P"))
+            ; {
+                ; return
+            ; }
+            ; Send {Enter}
+                ; sleep 100
+        ; return
 #IfWinActive 
 
 ; a:=Clipboard, Clipboard="I see genie"   ;save your current clipboard to a variable and set the clipboard to text
@@ -640,7 +672,7 @@ CapsLock & r:: ; Reload script
         ; Else
             ; MsgBox, The string was not found.
 
-CapsLock & s:: ;symbol insertion!
+!F16:: ;symbol insertion!
     name =
     winTitle := "Input Symbol"
     winPrompt := "Input Symbol"
@@ -683,6 +715,8 @@ CapsLock & s:: ;symbol insertion!
     else If (name ="utheta")
         send Θ
     else If (name ="ltheta")
+        send θ
+    else If (name ="lth")
         send θ
     else If (name ="uiota")
         send Ι

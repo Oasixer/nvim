@@ -157,6 +157,9 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'dbakker/vim-projectroot'
 
+Plug 'nvim-lua/plenary.nvim' " req for harpoon
+Plug 'ThePrimeagen/harpoon'
+
 call plug#end() 
 
 " ------------------------------------------------------------
@@ -1231,6 +1234,22 @@ endif
 " nnoremap <A-k> <C-w>k
 " nnoremap <A-l> <C-w>l
     
+
+" LUA shit:
+" let lua_path = stdpath('config') . '/lua/lua_stuff.lua'
+"let lua_src = '~/.config/nvim/lua/lua_stuff.lua'
+"
+"let lua_dest = '~/AppData/Local/nvim'
+"" exe '!rm -f' . lua_dest
+"
+"exe '!C:\Git\git-bash.exe -c "rm -rf ~/AppData/Local/nvim/lua"' 
+"exe '!C:\Git\git-bash.exe -c "mkdir ~/AppData/Local/nvim/lua"' 
+"exe '!C:\Git\git-bash.exe -c "cp ' . lua_src . ' ' . '~/AppData/Local/nvim/lua"'
+"unlet lua_src
+"unlet lua_dest
+"lua require('lua_stuff')
+" lua require("harpoon").setup(harpoon_settings)
+" nnoremap <Leader>a :lua require("harpoon.mark").add_file()<cr>
 
 "------------------------------------------------
 " INDENTATION
