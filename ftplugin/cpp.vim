@@ -38,3 +38,19 @@ let b:ale_linters = ['']
 nnoremap <silent><buffer> <leader>s<CR> :FSHere<cr>
 nnoremap <silent><buffer> <leader>si :FSSplitAbove<cr>
 nnoremap <silent><buffer> <leader>ss :FSSplitLeft<cr>
+
+
+function! CppPrint()
+  exe "normal 0d^"
+  let line=getline('.')
+  exe "normal P"
+  if stridx(line, ":") == -1
+    exe "normal ^iif(hms->data.guidanceLogLevel >= 2){ Serial.println(\"A\"); }"
+  elseif stridx(line, ":") == 0
+    exe "normal ^xYiif(hms->data.guidanceLogLevel >= 2){ Serial.print(\"$a: \"); Serial.println(pA; }"
+  else
+    exe "normal ^iif(hms->data.guidanceLogLevel >= 2){ Serial.print(\"f:a \"); Serial.println(A); }"
+  endif
+endfunction
+
+nmap <buffer><silent> <Leader>fp <C-c>:call CppPrint()<CR>
