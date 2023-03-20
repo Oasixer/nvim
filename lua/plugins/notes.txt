@@ -1,0 +1,9 @@
+whichkey.lua: most bindings
+lspconfig.lua: also a lot of bindings
+
+
+involved with telescope:
+telescope.lua has a lot of binds
+dressing.lua (appearance)?
+
+nvim-webdev-icons: used for alpha.lua, some kinda greeting idk
