@@ -31,9 +31,9 @@ keymap("n", "<C-Space>", "<cmd>WhichKey \\<leader><cr>", opts)
 keymap("n", "<esc><esc>", "<cmd>nohlsearch<cr>", opts)
 -- Open little window with files
 
-vim.api.nvim_set_keymap(
-	"n",
-	"<tab>",
-	"<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
-	opts
-)
+-- vim.api.nvim_set_keymap(
+-- 	"n",
+-- 	"<tab>",
+-- 	"<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
+-- 	opts
+-- )

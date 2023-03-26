@@ -9,6 +9,7 @@ return {
     config = function()
       require("plugins.configs.neo-tree")
     end,
+    enabled = true,
   },
 
   -- Color scheme
@@ -25,7 +26,7 @@ return {
   -- { import = "lazyvim.plugins.extras.lang.json" },
   -- { import = "lazyvim.plugins.extras.ui.mini-animate" },
   -- import/override with your plugins
-  { import = "plugins" },
+  --{ import = "plugins" },
   -- use mini.starter instead of alpha
   -- { import = "lazyvim.plugins.extras.ui.mini-starter" },
   {
@@ -33,10 +34,11 @@ return {
     config = function()
       require("plugins.configs.alpha")
     end,
+    enabled = true,
   },
 
   -- add jsonls and schemastore ans setup treesitter for json, json5 and jsonc
-  { import = "lazyvim.plugins.extras.lang.json" },
+  -- { import = "lazyvim.plugins.extras.lang.json" },
 
   -- Comment stuff
   {
@@ -49,6 +51,12 @@ return {
     "dominikduda/vim_current_word",
     config = function()
       require("plugins.configs.highlight")
+    end,
+  },
+  { -- for camelcasemotion etc
+    "chaoren/vim-wordmotion",
+    config = function()
+      require("plugins.configs.wordmotion")
     end,
   },
   -- Icons
@@ -66,6 +74,7 @@ return {
     config = function()
       require("plugins.configs.telescope")
     end,
+    enabled = true,
   },
   { "nvim-telescope/telescope-media-files.nvim" },
   { "nvim-telescope/telescope-fzf-native.nvim" },
@@ -76,6 +85,7 @@ return {
     config = function()
       require("plugins.configs.project")
     end,
+    enabled = true,
   },
   { "ibhagwan/fzf-lua" },
 
@@ -121,7 +131,7 @@ return {
     end,
   },
 
-  { import = "lazyvim.plugins.extras.lang.typescript" },
+  -- { import = "lazyvim.plugins.extras.lang.typescript" },
 
   -- Formatting
   { "jayp0521/mason-null-ls.nvim" },
@@ -159,12 +169,12 @@ return {
       require("plugins.configs.gitsigns")
     end,
   },
-  {
-    "f-person/git-blame.nvim",
-    config = function()
-      require("plugins.configs.git-blame")
-    end,
-  },
+  -- {
+  --   "f-person/git-blame.nvim",
+  --   config = function()
+  --     require("plugins.configs.git-blame")
+  --   end,
+  -- },
   {
     "ruifm/gitlinker.nvim",
     config = function()

@@ -117,6 +117,7 @@ telescope.setup({
 
       n = {
         ["<esc>"] = actions.close,
+        ["<C-c>"] = actions.close,
         ["q"] = actions.close,
         ["<CR>"] = actions.select_default,
         ["<C-i>"] = actions.select_horizontal,

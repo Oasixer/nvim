@@ -61,15 +61,15 @@ cmp.setup({
     ["<Down>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      elseif luasnip.jumpable(1) then
-        luasnip.jump(1)
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif luasnip.expandable() then
-        luasnip.expand()
-      elseif check_backspace() then
-        -- cmp.complete()
-        fallback()
+      -- elseif luasnip.jumpable(1) then
+      --   luasnip.jump(1)
+      -- elseif luasnip.expand_or_jumpable() then
+      --   luasnip.expand_or_jump()
+      -- elseif luasnip.expandable() then
+      --   luasnip.expand()
+      -- elseif check_backspace() then
+      --   -- cmp.complete()
+      --   fallback()
       else
         fallback()
       end

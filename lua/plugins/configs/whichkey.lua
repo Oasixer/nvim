@@ -108,7 +108,7 @@ local mappings = {
   },
   --	["b"] = { "<cmd>lua require('user.bfs').open()<cr>", "Buffers" },
   --	["e"] = { "<cmd>Neotree toggle<cr>", "Explorer" },
-  --	["q"] = { '<cmd>lua require("user.functions").smart_quit()<CR>', "Quit" },
+  ["q"] = { '<cmd>lua require("user.functions").smart_quit()<CR>', "Quit" },
   --	["c"] = { "<cmd>Bdelete!<CR>", "Close Buffer" },
   --	["P"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
   --	["gy"] = "Open code in Browser",
@@ -192,11 +192,11 @@ local mappings = {
     b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
     c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
     f = { "<cmd>Telescope find_files<cr>", "Find File" },
-    [" "] = { "<cmd>Telescope live_grep theme=ivy<cr>", "Find Text" },
-    ["z"] = {
+    [" "] = { "<cmd>Telescope live_grep theme=ivy<cr>", "Live grep (find text)" },
+    ["t"] = {
       -- "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args(require('telescope.themes').get_dropdown({ winblend = 10 }))<cr>",
       "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args(require('telescope.themes').get_dropdown())<cr>",
-      "Find Text",
+      "Live grep raw",
     },
     s = { "<cmd>Telescope grep_string theme=ivy<cr>", "Find String" },
     h = { "<cmd>Telescope help_tags<cr>", "Help" },
@@ -258,16 +258,51 @@ local mappings = {
     name = "LSP",
     -- a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" }, -- for suggested actions like vscode to fix a diagnostic
     --                                                                   -- possibly also includes refactors??
-    e = { "<cmd>TroubleToggle<cr>", "Toggle errors (diagnostics)" },
-    d = { "<cmd>Telescope lsp_definitions<cr>" },
+    -- d = { "<cmd>Telescope lsp_definitions<cr>" },
     -- keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts) -- go to implementation
-    Df = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Floating " },
-    r = { "<cmd>Telescope lsp_references<cr>" },
+    --
+    --
+    -- conventions for unambiguity:
+    --
+    g = {
+      name = "Goto",
+      -- g = { "<cmd>Lspsaga goto_definition<CR>", "Goto ?)" },
+      [" "] = { "<cmd>Lspsaga goto_definition<CR>", "Goto definition" },
+      t = { "<cmd>Lspsaga goto_type_definition<CR>", "Goto type definition" },
+      e = { "<cmd>lua vim.lsp.buf.declaration()<cr>", "Goto declaration" },
+      i = { "<cmd>Telescope lsp_implementations<cr>", "Telescope implementations" },
+    },
+    p = {
+      name = "Peek",
+      [" "] = { "<cmd>Lspsaga peek_definition<cr>", "Peek definition" },
+      t = { "<cmd>Lspsaga peek_type_definition<cr>", "Peek type definition" },
+      i = { "<cmd>Telescope lsp_implementations<cr>", "Telescope implementations" },
+    },
+    d = {
+      name = "Diagnostics",
+      h = { '<cmd>lua require("user.functions").hide_diagnostics()<cr>', "Hide Diagnostics" },
+      s = { '<cmd>lua require("user.functions").show_diagnostics()<cr>', "Show Diagnostics" },
+      t = { '<cmd>lua require("user.functions").toggle_diagnostics()<cr>', "Toggle Diagnostics" },
+      n = { "<cmd>Lspsaga diagnostic_jump_next<cr>", "Jump to next diagnostic" },
+      p = { "<cmd>Lspsaga diagnostic_jump_prev<cr>", "Jump to prev diagnostic" },
+      f = { "<cmd>Telescope diagnostics<cr>", "Telescope diagnostics" },
+      l = { "<cmd>Lspsaga show_line_diagnostics<cr>", "Show line diagnostics" },
+    },
+    f = {
+      name = "Telescope",
+      r = { "<cmd>Telescope lsp_references<cr>", "Telescope references" },
+      [" "] = { "<cmd>Telescope lsp_definitions<cr>", "Telescope definitions" },
+      i = { "<cmd>Telescope lsp_implementations<cr>", "Telescope implementations" },
+    },
+    -- ["gd"] = { "<cmd>Lspsaga peek_definition<CR>", "peek definition" },
+    -- ["Df"] = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Floating " },
 
+    ["R"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
+    --["u"] = { "<cmd>TroubleToggle lsp_references<cr>", "References" },
     -- diagnostics
     --w = { "<cmd>Telescope lsp_workspace_diagnostics<cr>", "Workspace Diagnostics" },
-    t = { '<cmd>lua require("user.functions").toggle_diagnostics()<cr>', "Toggle Diagnostics" },
-    n = { "<cmd>Lspsaga diagnostic_jump_next<cr>", "next diagnostic" },
+    --t = { '<cmd>lua require("user.functions").toggle_diagnostics()<cr>', "Toggle Diagnostics" },
+    --n = { "<cmd>Lspsaga diagnostic_jump_next<cr>", "next diagnostic" },
     -- keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- jump to previous diagnostic in buffer
     -- keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts) -- jump to next diagnostic in buffer
 
@@ -289,8 +324,6 @@ local mappings = {
     --},
     --l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
     --q = { "<cmd>lua vim.lsp.diagnostic.set_loclist()<cr>", "Quickfix" },
-    ["R"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
-    ["u"] = { "<cmd>TroubleToggle lsp_references<cr>", "References" },
     --s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" }, -- list of symbols in document
     --S = {
     --  "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",

@@ -32,6 +32,7 @@ local opts = {
   },
 }
 
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+--vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,winsize,winpos,terminal"
 
 auto_session.setup(opts)

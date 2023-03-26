@@ -8,8 +8,11 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
   spec = {
-    { "LazyVim/LazyVim", keys = { { "<leader>fn", false }, { " fn", false } }, import = "lazyvim.plugins" },
+    -- { "LazyVim/LazyVim", keys = { { "<leader>fn", false }, { " fn", false } }, import = "lazyvim.plugins" }, -- none of these did anything either......
+    -- { "LazyVim/LazyVim", keys = { { "<leader>fn", false }, { " fn", false } }, --import = "lazyvim.plugins" }, -- none of these did anything either......
+    -- },
     { import = "plugins" },
+    -- { import = "lazyvim.plugins.extras.lang.typescript" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -38,7 +41,7 @@ require("lazy").setup({
   },
   ui = {
     custom_keys = {
-      ["<leader>fn"] = false,
+      ["<leader>fn"] = false, -- as far as I can tell, none of these did anything............
       ["<localleader>fn"] = false,
       [" fn"] = false,
     },

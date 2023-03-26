@@ -7,3 +7,105 @@ telescope.lua has a lot of binds
 dressing.lua (appearance)?
 
 nvim-webdev-icons: used for alpha.lua, some kinda greeting idk
+
+
+
+lazy state:
+  Updates (35)
+    ● LazyVim 13.64ms  start
+    ● LuaSnip 59.03ms   nvim-cmp
+    ● alpha-nvim 8.61ms  VimEnter
+    ○ catppuccin 
+    ● friendly-snippets 55.29ms   LuaSnip
+    ● fzf-lua 0.8ms  start
+    ● gitsigns.nvim 18.41ms  BufReadPre
+    ● gruvbox.nvim 0.13ms  start
+    ● lazy.nvim 36.16ms   init.lua
+    ● lspsaga.nvim 17.17ms  start
+    ● mason-lspconfig 0.12ms  start
+    ● mason-lspconfig.nvim 0.16ms   mason.nvim
+    ● mason.nvim 124.13ms  start
+    ● mini.ai 33.83ms  VeryLazy
+    ○ mini.bufremove   <leader>bD
+    ○ mini.surround   gzn
+    ● neo-tree.nvim 33.05ms   Neotree
+    ● neoconf.nvim 8.5ms   nvim-lspconfig
+    ● neodev.nvim 1.94ms   nvim-lspconfig
+    ● noice.nvim 5.16ms  VeryLazy
+    ● null-ls.nvim 6.53ms   mason.nvim
+    ● nvim-lspconfig 34.54ms   mason.nvim
+    ● nvim-navic 1.89ms   nvim-lspconfig
+    ● nvim-notify 6.56ms   noice.nvim
+    ○ nvim-spectre   <leader>sr
+    ● nvim-treesitter 17.75ms   nvim-ts-autotag
+    ● nvim-treesitter-textobjects 0.54ms   nvim-treesitter
+    ● nvim-web-devicons 4.11ms   alpha-nvim
+    ● nvim-window-picker 2.18ms  start
+    ● telescope.nvim 45.71ms   project.nvim
+    ● todo-comments.nvim 2.02ms  BufReadPost
+    ● tokyonight.nvim 3.64ms   LazyVim
+    ● trouble.nvim 12.71ms   gitsigns.nvim
+    ● vim-illuminate 4.17ms  BufReadPost
+    ● which-key.nvim 4.97ms  start
+  
+  Clean (9)
+    ○ SchemaStore.nvim 
+    ○ bufferline.nvim 
+    ○ git-blame.nvim 
+    ○ libp.nvim 
+    ○ mini.starter 
+    ○ nerdcommenter 
+    ○ nerdtree 
+    ○ persistence.nvim 
+    ○ telescope-command-palette.nvim 
+  
+  Loaded (41)
+    ● Comment.nvim 2.57ms  start
+    ● auto-session 3.59ms  start
+    ● cmp-buffer 0.3ms   nvim-cmp
+    ● cmp-cmdline 0.52ms  start
+    ● cmp-emoji 0.6ms  start
+    ● cmp-nvim-lsp 0.28ms   nvim-cmp
+    ● cmp-nvim-lua 0.11ms  start
+    ● cmp-path 0.25ms   nvim-cmp
+    ● cmp_luasnip 0.36ms   nvim-cmp
+    ● crates.nvim 0.83ms  start
+    ● gitlinker.nvim 7.19ms  start
+    ● impatient.nvim 0.17ms  start
+    ● indent-blankline.nvim 4.61ms  BufReadPost
+    ● lspkind.nvim 0.17ms   nvim-cmp
+    ● lualine.nvim 20.16ms  VeryLazy
+    ● mason-null-ls.nvim 0.41ms  start
+    ● mini.comment 2.16ms  VeryLazy
+    ● mini.indentscope 5.39ms  BufReadPre
+    ● mini.pairs 4.76ms  VeryLazy
+    ● moonbow.nvim 0.09ms  start
+    ● neoscroll.nvim 4.03ms  start
+    ● nui.nvim 0.33ms   noice.nvim
+    ● nvim-autopairs 89.93ms  start
+    ● nvim-cmp 80.58ms   nvim-autopairs
+    ● nvim-colorizer.lua 6.49ms  start
+    ● nvim-ts-autotag 22.31ms  start
+    ● playground 1.06ms  start
+    ● plenary.nvim 0.57ms   gitlinker.nvim
+    ● project.nvim 51.32ms  start
+    ● rust-tools.nvim 0.28ms  start
+    ● telescope-env.nvim 0.19ms  start
+    ● telescope-fzf-native.nvim 0.3ms  start
+    ● telescope-live-grep-args.nvim 0.42ms  start
+    ● telescope-media-files.nvim 0.28ms  start
+    ● typescript.nvim 0.66ms   nvim-lspconfig
+    ● vim-maximizer 0.87ms  start
+    ● vim-repeat 0.37ms  VeryLazy
+    ● vim-signature 2.58ms  start
+    ● vim-wordmotion 3.28ms  start
+    ● vim_current_word 1.05ms  start
+    ● vista.vim 0.8ms  start
+  
+  Not Loaded (5)
+    ○ dressing.nvim 
+    ○ flit.nvim   T
+    ○ leap.nvim   gs
+    ○ nvim-ts-context-commentstring 
+    ○ vim-startuptime   StartupTime
+
